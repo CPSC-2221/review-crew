@@ -9,7 +9,7 @@ import (
 )
 
 func postUser(ctx *gin.Context) {
-	var user db.User
+	var user db.KeylessUser
 
 	err := ctx.Bind(&user)
 	if err != nil {
@@ -89,7 +89,7 @@ func deleteUser(ctx *gin.Context) {
 }
 
 func putUser(ctx *gin.Context) {
-	var updatedUser db.User
+	var updatedUser db.KeylessUser
 
 	err := ctx.Bind(&updatedUser)
 	if err != nil {
