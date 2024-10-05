@@ -8,6 +8,6 @@ import (
 func main() {
 	db.InitPostgresDB()
 	r := router.InitRouter()
-	r.Run(":8080")
+	r.Run(":80")
 	// r.RunTLS(":8080", "./testdata/server.pem", "./testdata/server.key")
 }
