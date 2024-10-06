@@ -1,11 +1,16 @@
 package components
 
-var navbarClass = "px-3 mx-2 bg-primary hover:bg-secondary font-bold text-secondary hover:text-tertiary h-11 flex flex-col justify-center content-center rounded-lg cursor-pointer"
+var navbarClass = "px-3 mx-2 bg-tertiary hover:bg-secondary font-bold text-secondary hover:text-tertiary h-11 flex flex-col justify-center content-center rounded-lg cursor-pointer"
 
 templ Navbar() {
-	<div class="flex flex-row h-14 items-center px-1 select-none">
-		<div hx-get="/home" hx-target="#inner-body" class={ navbarClass }>home</div>
-		<div hx-get="/users" hx-target="#inner-body" class={ navbarClass }>users</div>
-		<div class={ navbarClass }>log in</div>
+	<div class="w-full flex flex-row justify-between select-none">
+		<div class="flex flex-row h-14 items-center">
+			<div class="text-primary font-black mx-3">LOGO</div>
+			<div hx-get="/home" hx-target="#inner-body" class={ navbarClass }>home</div>
+			<div hx-get="/users" hx-target="#inner-body" class={ navbarClass }>users</div>
+		</div>
+		<div class="flex flex-row h-14 items-center">
+			<div class={ navbarClass }>log in</div>
+		</div>
 	</div>
 }
