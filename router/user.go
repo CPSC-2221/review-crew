@@ -54,18 +54,6 @@ func getUser(ctx *gin.Context) {
 	})
 }
 
-func getUsers(ctx *gin.Context) {
-	res, err := db.GetUsers(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, res)
-}
-
 func deleteUser(ctx *gin.Context) {
 	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 16)
 	if err != nil {

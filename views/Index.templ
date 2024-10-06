@@ -1,0 +1,30 @@
+package views
+
+import "server-api/views/components"
+
+templ Index() {
+	<!DOCTYPE html>
+	<html lang="en">
+		@header()
+		<body class="bg-background h-screen">
+			@components.Navbar()
+			<div id="inner-body" class="h-fit w-[46rem] mx-auto mt-10 flex flex-col items-center gap-5">
+				@Home()
+			</div>
+		</body>
+	</html>
+}
+
+templ Home() {
+	<div class="text-6xl text-primary font-semibold">HOME</div>
+}
+
+templ header() {
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title></title>
+		<link href="../static/css/output.css" rel="stylesheet"/>
+		<script src="/static/htmx.min.js"></script>
+	</head>
+}

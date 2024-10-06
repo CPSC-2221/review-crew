@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 164, 36, 59;
+    --color-secondary: 39, 62, 71;
+    --color-background: 216, 201, 155;
+    --color-supporting: 216, 151, 60;
+    --color-tertiary: 189, 99, 47;
+  }
+}

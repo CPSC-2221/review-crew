@@ -8,9 +8,13 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+	r.Static("static", "static")
+
+	r.GET("/", index)
+	r.GET("/users", getUsers)
+	r.GET("/home", home)
 
 	r.POST("/user", postUser)
-	r.GET("/users", getUsers)
 	r.GET("/user/:id", getUser)
 	r.PUT("/user/:id", putUser)
 	r.DELETE("/user/:id", deleteUser)
