@@ -61,6 +61,72 @@ func CreateRepliesToTable(c *gin.Context) {
 	}
 }
 
+func CreateReviewTable(c *gin.Context) {
+	_, err := dbpool.Exec(c,
+		"CREATE TABLE review ("+
+			"review_ID INT PRIMARY KEY"+
+			"email VARCHAR(255) NOT NULL,"+
+			"restaurant_ID INT NOT NULL,"+
+			"comment TEXT,"+
+			"date DATE,"+
+			"FOREIGN KEY(email) REFERENCES Users(email)"+
+			"FOREIGN KEY(restaurant_ID) REFRENCES Restaurant(restaurant_ID)"+");")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+}
+
+
+func CreateReviewCharacterLimitTable(c *gin.Context) {
+	_, err := dbpool.Exec(c,
+		"CREATE TABLE reviewCharacterLimit ("+
+			"restaurant_ID INT PRIMARY KEY"+
+			"character_limit INT NOT NULL,"+
+			"FOREIGN KEY(restaurant_ID) REFRENCE Review(restaurant_ID)"+
+			");")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+}
+func CreateManagesTable(c *gin.Context) {
+	_, err := dbpool.Exec(c,
+		"CREATE TABLE manages ("+
+			"Uemail VARCHAR (255),"+
+			"restaurantID VARCHAR (50),"+
+			"CanDeleteComments BOOL,"+
+			"CanUpdateListing BOOL,"+
+			"PRIMARY KEY(email,restaurantID)"+
+			"FOREIGN KEY(Uemail) REFERENCES users(email),"+
+			"FOREIGN KEY(restaurantID) REFERENCES restaurant(restaurantID)"+
+			");")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+}
+
+
+func CreateLikesTable(c *gin.Context) {
+	_, err := dbpool.Exec(c,
+		"CREATE TABLE likes ("+
+			"ReviewID INTEGER,"+
+			"userEmail VARCHAR (255),"+
+			"PRIMARY KEY(ReviewID,userEmail),"+
+			"FOREIGN KEY(ReviewID) REFERENCES review(ReviewID)"+
+			"FOREIGN KEY(userEmail) REFERENCES users(email)"+
+			");")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+}
+
 func CreateOwnsTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE Owns ("+

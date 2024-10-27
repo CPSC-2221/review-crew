@@ -16,19 +16,6 @@ type User struct {
 	KeylessUser
 }
 
-func CreateUsersTable(c *gin.Context) {
-	_, err := dbpool.Exec(c,
-		"CREATE TABLE users ("+
-			"id SMALLSERIAL PRIMARY KEY,"+
-			"username VARCHAR (50) UNIQUE NOT NULL,"+
-			"email VARCHAR (255) UNIQUE NOT NULL"+
-			");")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
-}
 
 func CreateUser(user *KeylessUser, c *gin.Context) (*User, error) {
 	var new_user User
