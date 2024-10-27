@@ -78,7 +78,6 @@ func CreateReviewTable(c *gin.Context) {
 	}
 }
 
-
 func CreateReviewCharacterLimitTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE reviewCharacterLimit ("+
@@ -92,6 +91,7 @@ func CreateReviewCharacterLimitTable(c *gin.Context) {
 		})
 	}
 }
+
 func CreateManagesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE manages ("+
@@ -109,7 +109,6 @@ func CreateManagesTable(c *gin.Context) {
 		})
 	}
 }
-
 
 func CreateLikesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,

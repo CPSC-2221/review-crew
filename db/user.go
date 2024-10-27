@@ -1,8 +1,6 @@
 package db
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +13,6 @@ type User struct {
 	ID int16 `json:"id"`
 	KeylessUser
 }
-
 
 func CreateUser(user *KeylessUser, c *gin.Context) (*User, error) {
 	var new_user User
