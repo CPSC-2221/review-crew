@@ -14,7 +14,7 @@ type Manages struct {
 func CreateManages(manages *Manages, c *gin.Context) (*Manages, error) {
 	var new_manages Manages
 	row := dbpool.QueryRow(c, "INSERT INTO manages(email,restaurantID,CanDeleteComments,CanUpdateListing) VALUES ($1,$2,$3,$4) RETURNING *;", manages.Email, manages.RestaurantID, manages.CanDeleteComments, manages.CanUpdateListing)
-	err := row.Scan(&new_manager.Email, &new_manager.RestaurantID, &new_manager.CanDeleteComments, &new_manager.CanUpdateListing)
+	err := row.Scan(&new_manages.Email, &new_manages.RestaurantID, &new_manages.CanDeleteComments, &new_manages.CanUpdateListing)
 	if err != nil {
 		return nil, err
 	}
@@ -42,10 +42,10 @@ func DeleteManages(email string, restaurantID int32, c *gin.Context) (*Manages, 
 	return &deleted_manages, nil
 }
 
-func UpdateManages(manages *Manages, c *gin.Context) (*Manages, error){
+func UpdateManages(manages *Manages, c *gin.Context) (*Manages, error) {
 	var new_manages Manages
-	row := dbpool.QueryRow(c, "UPDATE manages SET email=$1, restaurantID=$2, CanDeleteComments=$3, CanUpdateListing=$4 where email=$1 AND restaurantID=$2 RETURNING *;",manages.Email,manages.RestaurantID,manages.CanDeleteComments,manages.CanUpdateListing)
-	err := row.Scan(&new_manages.Email,&new_manages.RestaurantID,&new_manages.CanDeleteComments,&new_manages.CanUpdateListing)
+	row := dbpool.QueryRow(c, "UPDATE manages SET email=$1, restaurantID=$2, CanDeleteComments=$3, CanUpdateListing=$4 where email=$1 AND restaurantID=$2 RETURNING *;", manages.Email, manages.RestaurantID, manages.CanDeleteComments, manages.CanUpdateListing)
+	err := row.Scan(&new_manages.Email, &new_manages.RestaurantID, &new_manages.CanDeleteComments, &new_manages.CanUpdateListing)
 	if err != nil {
 		return nil, err
 	}
