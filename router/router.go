@@ -15,9 +15,9 @@ func InitRouter() *gin.Engine {
 	r.GET("/home", home)
 
 	r.POST("/user", postUser)
-	r.GET("/user/:id", getUser)
-	r.PUT("/user/:id", putUser)
-	r.DELETE("/user/:id", deleteUser)
+	r.GET("/user/:email", getUser)
+	r.PUT("/user/:email", putUser)
+	r.DELETE("/user/:email", deleteUser)
 	r.POST("/create-db", db.CreateUsersTable)
 
 	return r

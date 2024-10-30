@@ -4,30 +4,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type KeylessUser struct {
+type User struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
 
-type User struct {
-	ID int16 `json:"id"`
-	KeylessUser
-}
-
-func CreateUser(user *KeylessUser, c *gin.Context) (*User, error) {
+func CreateUser(user *User, c *gin.Context) (*User, error) {
 	var new_user User
-	row := dbpool.QueryRow(c, "INSERT INTO users(id, username, email) VALUES (DEFAULT, $1, $2) RETURNING *;", user.Username, user.Email)
-	err := row.Scan(&new_user.ID, &new_user.Username, &new_user.Email)
+	row := dbpool.QueryRow(c, "INSERT INTO users(username, email) VALUES ($1, $2) RETURNING *;", user.Username, user.Email)
+	err := row.Scan(&new_user.Username, &new_user.Email)
 	if err != nil {
 		return nil, err
 	}
 	return &new_user, nil
 }
 
-func GetUser(id int16, c *gin.Context) (*User, error) {
+func GetUser(email string, c *gin.Context) (*User, error) {
 	var user User
-	row := dbpool.QueryRow(c, "SELECT * FROM users WHERE id = $1;", id)
-	err := row.Scan(&user.ID, &user.Username, &user.Email)
+	row := dbpool.QueryRow(c, "SELECT * FROM users WHERE email = $1;", email)
+	err := row.Scan(&user.Username, &user.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +38,7 @@ func GetUsers(c *gin.Context) ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var user User
-		rows.Scan(&user.ID, &user.Username, &user.Email)
+		rows.Scan(&user.Username, &user.Email)
 		users = append(users, user)
 	}
 	err = rows.Err()
@@ -53,10 +48,10 @@ func GetUsers(c *gin.Context) ([]User, error) {
 	return users, nil
 }
 
-func DeleteUser(id int16, c *gin.Context) (*User, error) {
+func DeleteUser(email string, c *gin.Context) (*User, error) {
 	var deleted_user User
-	row := dbpool.QueryRow(c, "DELETE FROM users WHERE id = $1 RETURNING *;", id)
-	err := row.Scan(&deleted_user.ID, &deleted_user.Username, &deleted_user.Email)
+	row := dbpool.QueryRow(c, "DELETE FROM users WHERE email = $1 RETURNING *;", email)
+	err := row.Scan(&deleted_user.Username, &deleted_user.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +60,8 @@ func DeleteUser(id int16, c *gin.Context) (*User, error) {
 
 func UpdateUser(user *User, c *gin.Context) (*User, error) {
 	var new_user User
-	row := dbpool.QueryRow(c, "UPDATE users SET username=$1, email=$2 where id = $2 RETURNING *;", user.Username, user.Email, user.ID)
-	err := row.Scan(&new_user.ID, &new_user.Username, &new_user.Email)
+	row := dbpool.QueryRow(c, "UPDATE users SET username=$1, email=$2 where email=$2 RETURNING *;", user.Username, user.Email)
+	err := row.Scan(&new_user.Username, &new_user.Email)
 	if err != nil {
 		return nil, err
 	}

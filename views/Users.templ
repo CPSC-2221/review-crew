@@ -1,7 +1,6 @@
 package views
 
 import "server-api/db"
-import "strconv"
 
 templ Users(users []db.User) {
 	<div class="text-6xl text-primary font-semibold mb-8">USERS</div>
@@ -12,7 +11,6 @@ templ Users(users []db.User) {
 
 templ user(user db.User) {
 	<div class="bg-supporting text-secondary p-2 rounded-md flex flex-row gap-1.5">
-		<span><b>ID:</b> { strconv.Itoa(int(user.ID)) }</span>
 		<span><b>Username:</b> { user.Username }</span>
 		<span><b>Email:</b> { user.Email }</span>
 	</div>

@@ -64,13 +64,13 @@ func CreateRepliesToTable(c *gin.Context) {
 func CreateReviewTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE review ("+
-			"review_ID INT PRIMARY KEY"+
+			"reviewID INT PRIMARY KEY,"+
 			"email VARCHAR(255) NOT NULL,"+
-			"restaurant_ID INT NOT NULL,"+
+			"restaurantID INT NOT NULL,"+
 			"comment TEXT,"+
 			"date DATE,"+
-			"FOREIGN KEY(email) REFERENCES Users(email)"+
-			"FOREIGN KEY(restaurant_ID) REFRENCES Restaurant(restaurant_ID)"+");")
+			"FOREIGN KEY(email) REFERENCES Users(email),"+
+			"FOREIGN KEY(restaurantID) REFERENCES restaurant(restaurantID)"+");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -81,9 +81,9 @@ func CreateReviewTable(c *gin.Context) {
 func CreateReviewCharacterLimitTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE reviewCharacterLimit ("+
-			"restaurant_ID INT PRIMARY KEY"+
-			"character_limit INT NOT NULL,"+
-			"FOREIGN KEY(restaurant_ID) REFRENCE Review(restaurant_ID)"+
+			"restaurantID INT PRIMARY KEY"+
+			"characterLimit INT NOT NULL,"+
+			"FOREIGN KEY(restaurantID) REFERENCES review(restaurantID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -95,12 +95,12 @@ func CreateReviewCharacterLimitTable(c *gin.Context) {
 func CreateManagesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE manages ("+
-			"Uemail VARCHAR (255),"+
+			"email VARCHAR (255),"+
 			"restaurantID VARCHAR (50),"+
-			"CanDeleteComments BOOL,"+
-			"CanUpdateListing BOOL,"+
-			"PRIMARY KEY(email,restaurantID)"+
-			"FOREIGN KEY(Uemail) REFERENCES users(email),"+
+			"CanDeleteComments BOOLEAN,"+
+			"CanUpdateListing BOOLEAN,"+
+			"PRIMARY KEY(email, restaurantID)"+
+			"FOREIGN KEY(email) REFERENCES users(email),"+
 			"FOREIGN KEY(restaurantID) REFERENCES restaurant(restaurantID)"+
 			");")
 	if err != nil {
@@ -114,10 +114,10 @@ func CreateLikesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE likes ("+
 			"ReviewID INTEGER,"+
-			"userEmail VARCHAR (255),"+
-			"PRIMARY KEY(ReviewID,userEmail),"+
-			"FOREIGN KEY(ReviewID) REFERENCES review(ReviewID)"+
-			"FOREIGN KEY(userEmail) REFERENCES users(email)"+
+			"email VARCHAR (255),"+
+			"PRIMARY KEY(reviewID,email),"+
+			"FOREIGN KEY(reviewID) REFERENCES review(reviewID)"+
+			"FOREIGN KEY(email) REFERENCES users(email)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -128,12 +128,12 @@ func CreateLikesTable(c *gin.Context) {
 
 func CreateOwnsTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE Owns ("+
+		"CREATE TABLE owns ("+
 			"email VARCHAR (255)"+
 			"restaurantID INTEGER"+
 			"PRIMARY KEY (email, restaurantID)"+
 			"FOREIGN KEY (email) REFERENCES Users(email)"+
-			"FOREIGN KEY (restaurantID) REFERENCES Restaurant(restaurantID))"+
+			"FOREIGN KEY (restaurantID) REFERENCES Restaurant(restaurantID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

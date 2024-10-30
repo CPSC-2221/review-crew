@@ -3,13 +3,12 @@ package router
 import (
 	"net/http"
 	"server-api/db"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func postUser(ctx *gin.Context) {
-	var user db.KeylessUser
+	var user db.User
 
 	err := ctx.Bind(&user)
 	if err != nil {
@@ -33,16 +32,8 @@ func postUser(ctx *gin.Context) {
 }
 
 func getUser(ctx *gin.Context) {
-	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 16)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	id := int16(id_64)
-
-	res, err := db.GetUser(id, ctx)
+	email := ctx.Param("email")
+	res, err := db.GetUser(email, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -55,16 +46,8 @@ func getUser(ctx *gin.Context) {
 }
 
 func deleteUser(ctx *gin.Context) {
-	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 16)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	id := int16(id_64)
-
-	res, err := db.DeleteUser(id, ctx)
+	email := ctx.Param("email")
+	res, err := db.DeleteUser(email, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -77,7 +60,7 @@ func deleteUser(ctx *gin.Context) {
 }
 
 func putUser(ctx *gin.Context) {
-	var updatedUser db.KeylessUser
+	var updatedUser db.User
 
 	err := ctx.Bind(&updatedUser)
 	if err != nil {
@@ -87,16 +70,9 @@ func putUser(ctx *gin.Context) {
 		return
 	}
 
-	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 16)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	id := int16(id_64)
+	email := ctx.Param("email")
 
-	dbuser, err := db.GetUser(id, ctx)
+	dbuser, err := db.GetUser(email, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
