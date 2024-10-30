@@ -64,7 +64,7 @@ func CreateRepliesToTable(c *gin.Context) {
 func CreateReviewTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE review ("+
-			"reviewID INT PRIMARY KEY,"+
+			"id INT PRIMARY KEY,"+
 			"email VARCHAR(255) NOT NULL,"+
 			"restaurantID INT NOT NULL,"+
 			"comment TEXT,"+
