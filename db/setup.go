@@ -96,7 +96,7 @@ func CreateManagesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE manages ("+
 			"email VARCHAR (255),"+
-			"restaurantID VARCHAR (50),"+
+			"restaurantID INTEGER,"+
 			"CanDeleteComments BOOLEAN,"+
 			"CanUpdateListing BOOLEAN,"+
 			"PRIMARY KEY(email, restaurantID)"+
