@@ -1,5 +1,6 @@
 package db
 
+<<<<<<< Updated upstream
 import (
 	"github.com/gin-gonic/gin"
 )
@@ -50,3 +51,10 @@ func UpdateReviewCharacterLimit(limit *ReviewCharacterLimit, c *gin.Context) (*R
 	}
 	return &updated_limit, nil
 }
+=======
+
+type ReviewCharacterLimit struct{
+	RestaurantID int `json:"restaurantID"`
+	CharacterLimit int `json:"CharacterLimit"`
+}
+>>>>>>> Stashed changes

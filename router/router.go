@@ -20,6 +20,7 @@ func InitRouter() *gin.Engine {
 	r.DELETE("/user/:email", deleteUser)
 	r.POST("/create-db", db.CreateUsersTable)
 
+<<<<<<< Updated upstream
 	r.POST("/manages", postManages)
 	r.GET("/manages/:email/:restaurantID", getManages)
 	r.PUT("/manages/:email/:restaurantID", putManages)
@@ -44,5 +45,8 @@ func InitRouter() *gin.Engine {
 	r.PUT("/limit/:ID", putLimit)
 	r.DELETE("/limit/:ID", deleteLimit)
 	r.POST("/create-reviewCharLimitDB", db.CreateReviewCharacterLimitTable)
+=======
+
+>>>>>>> Stashed changes
 	return r
 }

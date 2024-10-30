@@ -12,6 +12,7 @@ type Review struct{
 	Date int `json:"date"`
 }
 
+<<<<<<< Updated upstream
 func CreateReview(review *Review, c *gin.Context)(*Review,error){
 	var new_review Review 
 	row := dbpool.QueryRow(c,"INSERT INTO review(id,email,restaurantID,comment,date) VALUES(DEFAULT,$1,$2,$3,$4);",review.ID,review.Email,review.RestaurantID,review.Comment,review.Date)
@@ -73,4 +74,10 @@ func UpdateReview(review *Review,c *gin.Context) (*Review,error) {
 		return nil,err
 	}
 	return &updated_review,nil
+=======
+func CreateReview(review *Review, c *gin.Context)(*User,error){
+	var new_review Review 
+	row := dbpool.QueryRow(c,"INSERT INTO review(id,email,restaurantID,comment,date) VALUES(DEFAULT,$1,$2,$3,$4)*;",review.ID,review.Email,review.RestaurantID,review.Comment,review.Date)
+	err :=row.Scan(&new_review.ID,&new_review.)
+>>>>>>> Stashed changes
 }
