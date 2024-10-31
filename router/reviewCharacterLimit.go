@@ -18,7 +18,7 @@ func postLimit(ctx *gin.Context) {
 		})
 		return
 	}
-	res, err := db.CreateReviewCharacterLimit(&limit, ctx)
+	res, err := db.CreateReviewCharacterLimit(limit, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -53,13 +53,14 @@ func getLimit(ctx *gin.Context) {
 }
 
 func deleteLimit(ctx *gin.Context) {
-	restaurantID, err := strconv.Atoi(ctx.Param("restaurantID"))
+	restaurantID_32, err := strconv.ParseInt(ctx.Param("restaurantID"), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid restaurant ID",
 		})
 		return
 	}
+	restaurantID := int32(restaurantID_32)
 
 	res, err := db.DeleteReviewCharacterLimit(restaurantID, ctx)
 	if err != nil {
@@ -92,18 +93,9 @@ func putLimit(ctx *gin.Context) {
 		return
 	}
 	restaurantID := int32(restaurantID_32)
+	updatedLimit.RestaurantID = restaurantID
 
-	dbLimit, err := db.GetReviewCharacterLimit(restaurantID, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	dbLimit.CharacterLimit = updatedLimit.CharacterLimit
-
-	res, err := db.UpdateReviewCharacterLimit(dbLimit, ctx)
+	res, err := db.UpdateReviewCharacterLimit(updatedLimit, restaurantID, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

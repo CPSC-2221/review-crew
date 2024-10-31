@@ -9,7 +9,7 @@ type User struct {
 	Email    string `json:"email"`
 }
 
-func CreateUser(user *User, c *gin.Context) (*User, error) {
+func CreateUser(user User, c *gin.Context) (*User, error) {
 	var new_user User
 	row := dbpool.QueryRow(c, "INSERT INTO users(username, email) VALUES ($1, $2) RETURNING *;", user.Username, user.Email)
 	err := row.Scan(&new_user.Username, &new_user.Email)
@@ -58,9 +58,9 @@ func DeleteUser(email string, c *gin.Context) (*User, error) {
 	return &deleted_user, nil
 }
 
-func UpdateUser(user *User, c *gin.Context) (*User, error) {
+func UpdateUser(replaceWith User, oldEmail string, c *gin.Context) (*User, error) {
 	var new_user User
-	row := dbpool.QueryRow(c, "UPDATE users SET username=$1, email=$2 where email=$2 RETURNING *;", user.Username, user.Email)
+	row := dbpool.QueryRow(c, "UPDATE users SET username=$1, email=$2 where email=$3 RETURNING *;", replaceWith.Username, replaceWith.Email, oldEmail)
 	err := row.Scan(&new_user.Username, &new_user.Email)
 	if err != nil {
 		return nil, err

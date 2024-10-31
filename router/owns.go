@@ -19,7 +19,7 @@ func postOwn(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateOwn(&own, ctx)
+	res, err := db.CreateOwn(own, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -33,14 +33,14 @@ func postOwn(ctx *gin.Context) {
 }
 
 func getOwn(ctx *gin.Context) {
-	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
+	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	id := int32(id_64)
+	id := int32(id_32)
 
 	email := ctx.Param("email")
 	res, err := db.GetOwn(email, id, ctx)
@@ -56,14 +56,14 @@ func getOwn(ctx *gin.Context) {
 }
 
 func deleteOwn(ctx *gin.Context) {
-	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
+	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	id := int32(id_64)
+	id := int32(id_32)
 
 	email := ctx.Param("email")
 	res, err := db.DeleteOwn(email, id, ctx)
@@ -74,7 +74,7 @@ func deleteOwn(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_user": res,
+		"deleted_own": res,
 	})
 }
 
@@ -89,27 +89,17 @@ func putOwn(ctx *gin.Context) {
 		return
 	}
 
-	id_64, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
+	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	id := int32(id_64)
-
+	id := int32(id_32)
 	email := ctx.Param("email")
-	dbown, err := db.GetOwn(email, id, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	dbown.Email = updatedOwn.Email
-	dbown.RestaurantID = updatedOwn.RestaurantID
 
-	res, err := db.UpdateOwn(dbown, ctx)
+	res, err := db.UpdateOwn(updatedOwn, email, id, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

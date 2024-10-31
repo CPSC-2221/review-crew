@@ -6,10 +6,10 @@ import (
 
 type Own struct {
 	Email        string `json:"email"`
-	RestaurantID int    `json:"restaurantID"`
+	RestaurantID int32  `json:"restaurantID"`
 }
 
-func CreateOwn(owns *Own, c *gin.Context) (*Own, error) {
+func CreateOwn(owns Own, c *gin.Context) (*Own, error) {
 	var new_own Own
 	row := dbpool.QueryRow(c, "INSERT INTO owns(email, restaurantID) VALUES ($1, $2) RETURNING *;", owns.Email, owns.RestaurantID)
 	err := row.Scan(&new_own.Email, &new_own.RestaurantID)
@@ -19,9 +19,9 @@ func CreateOwn(owns *Own, c *gin.Context) (*Own, error) {
 	return &new_own, nil
 }
 
-func GetOwn(Email string, RestaurantID int32, c *gin.Context) (*Own, error) {
+func GetOwn(email string, restaurantID int32, c *gin.Context) (*Own, error) {
 	var own Own
-	row := dbpool.QueryRow(c, "SELECT * FROM owns WHERE email = $1 and restaurantID = $2;", Email, RestaurantID)
+	row := dbpool.QueryRow(c, "SELECT * FROM owns WHERE email = $1 and restaurantID = $2;", email, restaurantID)
 	err := row.Scan(&own.Email, &own.RestaurantID)
 	if err != nil {
 		return nil, err
@@ -48,9 +48,9 @@ func GetOwns(c *gin.Context) ([]Own, error) {
 	return owns, nil
 }
 
-func DeleteOwn(Email string, RestaurantID int32, c *gin.Context) (*Own, error) {
+func DeleteOwn(email string, restaurantID int32, c *gin.Context) (*Own, error) {
 	var deleted_own Own
-	row := dbpool.QueryRow(c, "DELETE FROM owns WHERE email = $1 and restaurantID = $2 RETURNING *;", Email, RestaurantID)
+	row := dbpool.QueryRow(c, "DELETE FROM owns WHERE email = $1 and restaurantID = $2 RETURNING *;", email, restaurantID)
 	err := row.Scan(&deleted_own.Email, &deleted_own.RestaurantID)
 	if err != nil {
 		return nil, err
@@ -58,9 +58,9 @@ func DeleteOwn(Email string, RestaurantID int32, c *gin.Context) (*Own, error) {
 	return &deleted_own, nil
 }
 
-func UpdateOwn(own *Own, c *gin.Context) (*Own, error) {
+func UpdateOwn(replaceWith Own, oldEmail string, oldRestaurantID int32, c *gin.Context) (*Own, error) {
 	var new_own Own
-	row := dbpool.QueryRow(c, "UPDATE owns SET email=$1, restaurantID=$2 where email = $1 and restaurantID = $2 RETURNING *;", own.Email, own.RestaurantID)
+	row := dbpool.QueryRow(c, "UPDATE owns SET email=$1, restaurantID=$2 where email = $3 and restaurantID = $4 RETURNING *;", replaceWith.Email, replaceWith.RestaurantID, oldEmail, oldRestaurantID)
 	err := row.Scan(&new_own.Email, &new_own.RestaurantID)
 	if err != nil {
 		return nil, err

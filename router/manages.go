@@ -19,7 +19,7 @@ func postManages(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateManages(&manages, ctx)
+	res, err := db.CreateManages(manages, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -96,20 +96,10 @@ func putManages(ctx *gin.Context) {
 		return
 	}
 	restaurantID := int32(id_32)
+	updatedManages.Email = email
+	updatedManages.RestaurantID = restaurantID
 
-	dbmanages, err := db.GetManages(email, restaurantID, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	dbmanages.Email = updatedManages.Email
-	dbmanages.RestaurantID = updatedManages.RestaurantID
-	dbmanages.CanDeleteComments = updatedManages.CanDeleteComments
-	dbmanages.CanUpdateListing = updatedManages.CanUpdateListing
-
-	res, err := db.UpdateManages(dbmanages, ctx)
+	res, err := db.UpdateManages(updatedManages, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -118,7 +108,6 @@ func putManages(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_user": res,
+		"updated_manages": res,
 	})
-
 }

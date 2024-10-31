@@ -1,21 +1,24 @@
 package db
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
 type Review struct {
-	ID           int    `json:"id"`
-	Email        string `json:"email"`
-	RestaurantID int    `json:"restaurantID"`
-	Comment      string `json:"comment"`
-	Date         int    `json:"date"`
+	ID                int32     `json:"id"`
+	Email             string    `json:"email"`
+	RestaurantID      int       `json:"restaurantID"`
+	Comment           string    `json:"comment"`
+	Datetime          time.Time `json:"datetime"`
+	RepliesToReviewID *int32    `json:"repliesTo"`
 }
 
-func CreateReview(review *Review, c *gin.Context) (*Review, error) {
+func CreateReview(review Review, c *gin.Context) (*Review, error) {
 	var new_review Review
-	row := dbpool.QueryRow(c, "INSERT INTO review(id,email,restaurantID,comment,date) VALUES(DEFAULT,$1,$2,$3,$4);", review.ID, review.Email, review.RestaurantID, review.Comment, review.Date)
-	err := row.Scan(&new_review.ID, &new_review.Email, &new_review.RestaurantID, &new_review.Comment, &new_review.Date)
+	row := dbpool.QueryRow(c, "INSERT INTO review(id, email, restaurantID, comment, datetime) VALUES (DEFAULT, $1, $2, $3, $4) RETURNING *;", review.Email, review.RestaurantID, review.Comment, review.Datetime)
+	err := row.Scan(&new_review.ID, &new_review.Email, &new_review.RestaurantID, &new_review.Comment, &new_review.Datetime)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +28,7 @@ func CreateReview(review *Review, c *gin.Context) (*Review, error) {
 func GetReview(id int32, c *gin.Context) (*Review, error) {
 	var review Review
 	row := dbpool.QueryRow(c, "SELECT * FROM review WHERE id = $1;", id)
-	err := row.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Date)
+	err := row.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +43,7 @@ func GetReviews(c *gin.Context) ([]Review, error) {
 	var reviews []Review
 	for rows.Next() {
 		var review Review
-		err := rows.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Date)
+		err := rows.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime)
 		if err != nil {
 			return nil, err
 		}
@@ -56,18 +59,17 @@ func GetReviews(c *gin.Context) ([]Review, error) {
 func DeleteReview(id int32, c *gin.Context) (*Review, error) {
 	var deleted_review Review
 	row := dbpool.QueryRow(c, "DELETE FROM review WHERE id = $1 RETURNING *;", id)
-	err := row.Scan(&deleted_review.ID, &deleted_review.Email, &deleted_review.RestaurantID, &deleted_review.Comment, &deleted_review.Date)
+	err := row.Scan(&deleted_review.ID, &deleted_review.Email, &deleted_review.RestaurantID, &deleted_review.Comment, &deleted_review.Datetime)
 	if err != nil {
 		return nil, err
 	}
 	return &deleted_review, nil
 }
 
-func UpdateReview(review *Review, c *gin.Context) (*Review, error) {
+func UpdateReview(review Review, id int32, c *gin.Context) (*Review, error) {
 	var updated_review Review
-	row := dbpool.QueryRow(c, "UPDATE review SET email=$1, restaurantID=$2, comment=$3, date=$4 WHERE id=$5 RETURNING *;",
-		review.Email, review.RestaurantID, review.Comment, review.Date, review.ID)
-	err := row.Scan(&updated_review.ID, &updated_review.Email, &updated_review.RestaurantID, &updated_review.Comment, &updated_review.Date)
+	row := dbpool.QueryRow(c, "UPDATE review SET comment=$2 WHERE id=$1 RETURNING *;", id, review.Comment)
+	err := row.Scan(&updated_review.ID, &updated_review.Email, &updated_review.RestaurantID, &updated_review.Comment, &updated_review.Datetime)
 	if err != nil {
 		return nil, err
 	}

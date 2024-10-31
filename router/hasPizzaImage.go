@@ -7,10 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func postUser(ctx *gin.Context) {
-	var user db.User
+func postHasPizzaImage(ctx *gin.Context) {
+	var hasPizzaImage db.HasPizzaImage
 
-	err := ctx.Bind(&user)
+	err := ctx.Bind(&hasPizzaImage)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -18,61 +18,7 @@ func postUser(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateUser(user, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"user": res,
-	})
-}
-
-func getUser(ctx *gin.Context) {
-	email := ctx.Param("email")
-	res, err := db.GetUser(email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"user": res,
-	})
-}
-
-func deleteUser(ctx *gin.Context) {
-	email := ctx.Param("email")
-	res, err := db.DeleteUser(email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_user": res,
-	})
-}
-
-func putUser(ctx *gin.Context) {
-	var updatedUser db.User
-
-	err := ctx.Bind(&updatedUser)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	email := ctx.Param("email")
-
-	res, err := db.UpdateUser(updatedUser, email, ctx)
+	res, err := db.CreateHasPizzaImage(hasPizzaImage, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -81,6 +27,59 @@ func putUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_user": res,
+		"manages": res,
+	})
+}
+
+func getHasPizzaImage(ctx *gin.Context) {
+	name := ctx.Param("name")
+	res, err := db.GetHasPizzaImage(name, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"manages": res,
+	})
+}
+
+func deleteHasPizzaImage(ctx *gin.Context) {
+	name := ctx.Param("name")
+	res, err := db.DeleteHasPizzaImage(name, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"deleted_manages": res,
+	})
+}
+
+func putHasPizzaImage(ctx *gin.Context) {
+	var updatedHasPizzaImage db.HasPizzaImage
+
+	err := ctx.Bind(&updatedHasPizzaImage)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	name := ctx.Param("name")
+
+	res, err := db.UpdateHasPizzaImage(updatedHasPizzaImage, name, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"updated_manages": res,
 	})
 }

@@ -8,10 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func postReview(ctx *gin.Context) {
-	var review db.Review
+func postRestaurant(ctx *gin.Context) {
+	var restaurant db.Restaurant
 
-	err := ctx.Bind(&review)
+	err := ctx.Bind(&restaurant)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -19,19 +19,20 @@ func postReview(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateReview(review, ctx)
+	res, err := db.CreateRestaurant(&restaurant, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusCreated, gin.H{
-		"review": res,
+		"restaurant": res,
 	})
 }
 
-func getReview(ctx *gin.Context) {
+func getRestaurant(ctx *gin.Context) {
 	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -41,7 +42,7 @@ func getReview(ctx *gin.Context) {
 	}
 	id := int32(id_32)
 
-	res, err := db.GetReview(id, ctx)
+	res, err := db.GetRestaurant(id, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -49,11 +50,11 @@ func getReview(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"review": res,
+		"restaurant": res,
 	})
 }
 
-func deleteReview(ctx *gin.Context) {
+func deleteRestaurant(ctx *gin.Context) {
 	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -63,21 +64,22 @@ func deleteReview(ctx *gin.Context) {
 	}
 	id := int32(id_32)
 
-	res, err := db.DeleteReview(id, ctx)
+	res, err := db.DeleteRestaurant(id, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_review": res,
+		"deleted_restaurant": res,
 	})
 }
 
-func putReview(ctx *gin.Context) {
-	var updated_review db.Review
+func putRestaurant(ctx *gin.Context) {
+	var updated_restaurant db.Restaurant
 
-	err := ctx.Bind(&updated_review)
+	err := ctx.Bind(&updated_restaurant)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -93,16 +95,18 @@ func putReview(ctx *gin.Context) {
 		return
 	}
 	id := int32(id_32)
-	updated_review.ID = id
 
-	res, err := db.UpdateReview(updated_review, id, ctx)
+	updated_restaurant.ID = id
+
+	res, err := db.UpdateRestaurant(&updated_restaurant, id, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_review": res,
+		"updated_restaurant": res,
 	})
 }

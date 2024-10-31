@@ -3,14 +3,15 @@ package router
 import (
 	"net/http"
 	"server-api/db"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func postUser(ctx *gin.Context) {
-	var user db.User
+func postLike(ctx *gin.Context) {
+	var likes db.Like
 
-	err := ctx.Bind(&user)
+	err := ctx.Bind(&likes)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -18,61 +19,7 @@ func postUser(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateUser(user, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"user": res,
-	})
-}
-
-func getUser(ctx *gin.Context) {
-	email := ctx.Param("email")
-	res, err := db.GetUser(email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"user": res,
-	})
-}
-
-func deleteUser(ctx *gin.Context) {
-	email := ctx.Param("email")
-	res, err := db.DeleteUser(email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_user": res,
-	})
-}
-
-func putUser(ctx *gin.Context) {
-	var updatedUser db.User
-
-	err := ctx.Bind(&updatedUser)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	email := ctx.Param("email")
-
-	res, err := db.UpdateUser(updatedUser, email, ctx)
+	res, err := db.CreateLike(likes, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -81,6 +28,49 @@ func putUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_user": res,
+		"like": res,
+	})
+}
+
+func getReviewLikes(ctx *gin.Context) {
+	id_32, err := strconv.ParseInt(ctx.Param("reviewID"), 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	reviewID := int32(id_32)
+	res, err := db.GetReviewLikes(reviewID, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"likes": res,
+	})
+}
+
+func deleteLike(ctx *gin.Context) {
+	email := ctx.Param("email")
+	id_32, err := strconv.ParseInt(ctx.Param("reviewID"), 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	reviewID := int32(id_32)
+	res, err := db.DeleteLike(reviewID, email, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"deleted_like": res,
 	})
 }
