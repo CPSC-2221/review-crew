@@ -35,7 +35,7 @@ func CreateRestaurantTable(c *gin.Context) {
 	}
 }
 
-func CreatePizzaImageTable(c *gin.Context) {
+func CreateHasPizzaImageTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE hasPizzaImage ("+
 			"name TEXT PRIMARY KEY,"+
@@ -55,26 +55,12 @@ func CreateReviewTable(c *gin.Context) {
 			"reviewID SERIAL PRIMARY KEY,"+
 			"email TEXT NOT NULL,"+
 			"restaurantID INTEGER NOT NULL,"+
-			"repliesToReviewID INTEGER"+
+			"repliesToReviewID INTEGER,"+
 			"comment TEXT,"+
 			"datetime TIMESTAMPTZ,"+
 			"FOREIGN KEY(email) REFERENCES Users(email),"+
-			"FOREIGN KEY(restaurantID) REFERENCES restaurant(restaurantID),"+
+			"FOREIGN KEY(restaurantID) REFERENCES restaurants(restaurantID),"+
 			"FOREIGN KEY(repliesToReviewID) REFERENCES review(reviewID)"+
-			");")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
-}
-
-func CreateReviewCharacterLimitTable(c *gin.Context) {
-	_, err := dbpool.Exec(c,
-		"CREATE TABLE reviewCharacterLimit ("+
-			"restaurantID INTEGER PRIMARY KEY"+
-			"characterLimit INTEGER NOT NULL,"+
-			"FOREIGN KEY(restaurantID) REFERENCES review(restaurantID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

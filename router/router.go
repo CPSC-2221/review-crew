@@ -44,23 +44,11 @@ func InitRouter() *gin.Engine {
 	r.DELETE("/review/:id", deleteReview)
 	r.POST("/create-review-table", db.CreateReviewTable)
 
-	r.POST("/limit", postLimit)
-	r.GET("/limit/:id", getLimit)
-	r.PUT("/limit/:id", putLimit)
-	r.DELETE("/limit/:id", deleteLimit)
-	r.POST("/create-review-character-limit-table", db.CreateReviewCharacterLimitTable)
-
 	r.POST("/has-pizza-image", postHasPizzaImage)
 	r.GET("/has-pizza-image/:name", getHasPizzaImage)
 	r.PUT("/has-pizza-image/:name", putHasPizzaImage)
 	r.DELETE("/has-pizza-image/:name", deleteHasPizzaImage)
-	r.POST("/create-has-pizza-image-table", db.CreateReviewCharacterLimitTable)
-
-	r.POST("/has-pizza-image", postHasPizzaImage)
-	r.GET("/has-pizza-image/:name", getHasPizzaImage)
-	r.PUT("/has-pizza-image/:name", putHasPizzaImage)
-	r.DELETE("/has-pizza-image/:name", deleteHasPizzaImage)
-	r.POST("/create-has-pizza-image-table", db.CreateReviewCharacterLimitTable)
+	r.POST("/create-has-pizza-image-table", db.CreateHasPizzaImageTable)
 
 	r.POST("/like", postLike)
 	r.GET("/like/:reviewID", getReviewLikes)
