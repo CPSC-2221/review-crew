@@ -7,10 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func postHasPizzaImage(ctx *gin.Context) {
-	var hasPizzaImage db.HasPizzaImage
+func postHasBurgerEmoji(ctx *gin.Context) {
+	var hasBurgerEmoji db.HasBurgerEmoji
 
-	err := ctx.Bind(&hasPizzaImage)
+	err := ctx.Bind(&hasBurgerEmoji)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -18,60 +18,7 @@ func postHasPizzaImage(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateHasPizzaImage(hasPizzaImage, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"hasPizzaImage": res,
-	})
-}
-
-func getHasPizzaImage(ctx *gin.Context) {
-	name := ctx.Param("name")
-	res, err := db.GetHasPizzaImage(name, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"hasPizzaImage": res,
-	})
-}
-
-func deleteHasPizzaImage(ctx *gin.Context) {
-	name := ctx.Param("name")
-	res, err := db.DeleteHasPizzaImage(name, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_hasPizzaImage": res,
-	})
-}
-
-func putHasPizzaImage(ctx *gin.Context) {
-	var updatedHasPizzaImage db.HasPizzaImage
-
-	err := ctx.Bind(&updatedHasPizzaImage)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	name := ctx.Param("name")
-
-	res, err := db.UpdateHasPizzaImage(updatedHasPizzaImage, name, ctx)
+	res, err := db.CreateHasBurgerEmoji(hasBurgerEmoji, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -80,6 +27,59 @@ func putHasPizzaImage(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_hasPizzaImage": res,
+		"burgerEmoji": res,
+	})
+}
+
+func getHasBurgerEmoji(ctx *gin.Context) {
+	username := ctx.Param("username")
+	res, err := db.GetHasBurgerEmoji(username, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"burgerEmoji": res,
+	})
+}
+
+func deleteHasBurgerEmoji(ctx *gin.Context) {
+	username := ctx.Param("username")
+	res, err := db.DeleteHasBurgerEmoji(username, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"deleted_burgerEmoji": res,
+	})
+}
+
+func putHasBurgerEmoji(ctx *gin.Context) {
+	var updatedHasBurgerEmoji db.HasBurgerEmoji
+
+	err := ctx.Bind(&updatedHasBurgerEmoji)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	username := ctx.Param("username")
+
+	res, err := db.UpdateHasBurgerEmoji(updatedHasBurgerEmoji, username, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"updated_burgerEmoji": res,
 	})
 }

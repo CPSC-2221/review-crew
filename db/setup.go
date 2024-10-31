@@ -27,6 +27,7 @@ func CreateRestaurantTable(c *gin.Context) {
 			"location TEXT NOT NULL,"+
 			"description TEXT NOT NULL,"+
 			"isPremium BOOLEAN NOT NULL"+
+			"FOREIGN KEY(isPremium) REFERENCES enabledPremiumFeatures(isPremium)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -41,6 +42,20 @@ func CreateHasPizzaImageTable(c *gin.Context) {
 			"name TEXT PRIMARY KEY,"+
 			"hasPizzaImage BOOLEAN NOT NULL,"+
 			"FOREIGN KEY(name) REFERENCES restaurants(name)"+
+			");")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+}
+
+func CreateHasBurgerEmojiTable(c *gin.Context) {
+	_, err := dbpool.Exec(c,
+		"CREATE TABLE enabledPremiumFeatures ("+
+			"username TEXT PRIMARY KEY,"+
+			"hasBurgerEmoji BOOLEAN NOT NULL,"+
+			"FOREIGN KEY(username) REFERENCES users(username)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

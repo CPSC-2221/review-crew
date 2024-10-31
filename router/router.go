@@ -55,5 +55,11 @@ func InitRouter() *gin.Engine {
 	r.DELETE("/like/:email/:reviewID", deleteLike)
 	r.POST("/create-likes-table", db.CreateLikesTable)
 
+	r.POST("/has-burger-emoji", postHasBurgerEmoji)
+	r.GET("/has-burger-emoji/:username", getHasBurgerEmoji)
+	r.PUT("/has-burger-emoji/:username", putHasBurgerEmoji)
+	r.DELETE("/has-burger-emoji:username", deleteHasBurgerEmoji)
+	r.POST("/create-has-burger-emoji-table", db.CreateHasBurgerEmojiTable)
+
 	return r
 }
