@@ -71,7 +71,7 @@ func CreateReviewTable(c *gin.Context) {
 			"comment TEXT,"+
 			"datetime TIMESTAMPTZ,"+
 			"FOREIGN KEY(email) REFERENCES Users(email),"+
-			"FOREIGN KEY(restaurantID) REFERENCES restaurants(restaurantID),"+
+			"FOREIGN KEY(restaurantID) REFERENCES restaurants(restaurantID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -83,8 +83,9 @@ func CreateReviewTable(c *gin.Context) {
 func CreateRepliesToTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE repliesTo ("+
-			"repliesToReviewID INTEGER PRIMARY KEY,"+
-			"isRepliedToReviewID INTEGER PRIMARY KEY,"+
+			"repliesToReviewID INTEGER,"+
+			"isRepliedToReviewID INTEGER,"+
+			"PRIMARY KEY (repliesToReviewID, isRepliedToReviewID),"+
 			"FOREIGN KEY(repliesToReviewID) REFERENCES review(reviewID),"+
 			"FOREIGN KEY(isRepliedToReviewID) REFERENCES review(reviewID)"+
 			");")

@@ -18,7 +18,7 @@ func CreateReview(review Review, c *gin.Context) (*Review, error) {
 	var new_review Review
 	row := dbpool.QueryRow(
 		c,
-		"INSERT INTO review(reviewID, email, restaurantID, repliesToReviewID, comment, datetime) VALUES (DEFAULT, $1, $2, $3, $4, $5) RETURNING *;",
+		"INSERT INTO review(reviewID, email, restaurantID, comment, datetime) VALUES (DEFAULT, $1, $2, $3, $4) RETURNING *;",
 		review.Email,
 		review.RestaurantID,
 		review.Comment,
