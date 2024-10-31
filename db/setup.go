@@ -23,11 +23,9 @@ func CreateRestaurantTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
 		"CREATE TABLE restaurants ("+
 			"restaurantID SERIAL PRIMARY KEY,"+
-			"name TEXT NOT NULL,"+
+			"name TEXT NOT NULL UNIQUE,"+
 			"location TEXT NOT NULL,"+
-			"description TEXT NOT NULL,"+
-			"isPremium BOOLEAN NOT NULL"+
-			"FOREIGN KEY(isPremium) REFERENCES enabledPremiumFeatures(isPremium)"+
+			"description TEXT NOT NULL"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -52,7 +50,7 @@ func CreateHasPizzaImageTable(c *gin.Context) {
 
 func CreateHasBurgerEmojiTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE enabledPremiumFeatures ("+
+		"CREATE TABLE hasBurgerEmoji ("+
 			"username TEXT PRIMARY KEY,"+
 			"hasBurgerEmoji BOOLEAN NOT NULL,"+
 			"FOREIGN KEY(username) REFERENCES users(username)"+
@@ -91,9 +89,9 @@ func CreateManagesTable(c *gin.Context) {
 			"restaurantID INTEGER NOT NULL,"+
 			"CanDeleteComments BOOLEAN NOT NULL,"+
 			"CanUpdateListing BOOLEAN,"+
-			"PRIMARY KEY (email, restaurantID)"+
+			"PRIMARY KEY (email, restaurantID),"+
 			"FOREIGN KEY (email) REFERENCES users(email),"+
-			"FOREIGN KEY (restaurantID) REFERENCES restaurant(restaurantID)"+
+			"FOREIGN KEY (restaurantID) REFERENCES restaurants(restaurantID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -108,7 +106,7 @@ func CreateLikesTable(c *gin.Context) {
 			"reviewID INTEGER NOT NULL,"+
 			"email TEXT NOT NULL,"+
 			"PRIMARY KEY (reviewID, email),"+
-			"FOREIGN KEY (reviewID) REFERENCES review(reviewID)"+
+			"FOREIGN KEY (reviewID) REFERENCES review(reviewID),"+
 			"FOREIGN KEY (email) REFERENCES users(email)"+
 			");")
 	if err != nil {
@@ -125,7 +123,7 @@ func CreateOwnsTable(c *gin.Context) {
 			"restaurantID INTEGER,"+
 			"PRIMARY KEY (email, restaurantID),"+
 			"FOREIGN KEY (email) REFERENCES users(email),"+
-			"FOREIGN KEY (restaurantID) REFERENCES restaurant(restaurantID)"+
+			"FOREIGN KEY (restaurantID) REFERENCES restaurants(restaurantID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
