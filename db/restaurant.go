@@ -9,13 +9,12 @@ type Restaurant struct {
 	Name        string `json:"name"`
 	Location    string `json:"location"`
 	Description string `json:"description"`
-	IsPremium   bool   `json:"isPremium"`
 }
 
 func CreateRestaurant(restaurant *Restaurant, c *gin.Context) (*Restaurant, error) {
 	var new_restaurant Restaurant
-	row := dbpool.QueryRow(c, "INSERT INTO restaurants(restaurantID, name, location, description, isPremium) VALUES (DEFAULT, $2, $3, $4, $5) RETURNING *;", restaurant.ID, restaurant.Name, restaurant.Location, restaurant.Description, restaurant.IsPremium)
-	err := row.Scan(&restaurant.ID, &restaurant.Name, &restaurant.Location, &restaurant.Description, &restaurant.IsPremium)
+	row := dbpool.QueryRow(c, "INSERT INTO restaurants(restaurantID, name, location, description) VALUES (DEFAULT, $1, $2, $3) RETURNING *;", restaurant.Name, restaurant.Location, restaurant.Description)
+	err := row.Scan(&new_restaurant.ID, &new_restaurant.Name, &new_restaurant.Location, &new_restaurant.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +24,7 @@ func CreateRestaurant(restaurant *Restaurant, c *gin.Context) (*Restaurant, erro
 func GetRestaurant(id int32, c *gin.Context) (*Restaurant, error) {
 	var new_restaurant Restaurant
 	row := dbpool.QueryRow(c, "SELECT * FROM restaurants WHERE restaurantID = $1;", id)
-	err := row.Scan(&new_restaurant.ID, &new_restaurant.Name, &new_restaurant.Location, &new_restaurant.Description, &new_restaurant.IsPremium)
+	err := row.Scan(&new_restaurant.ID, &new_restaurant.Name, &new_restaurant.Location, &new_restaurant.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +40,7 @@ func GetRestaurants(c *gin.Context) ([]Restaurant, error) {
 	var restaurants []Restaurant
 	for rows.Next() {
 		var restaurant Restaurant
-		rows.Scan(&restaurant.ID, &restaurant.Name, &restaurant.Location, &restaurant.Description, &restaurant.IsPremium)
+		rows.Scan(&restaurant.ID, &restaurant.Name, &restaurant.Location, &restaurant.Description)
 		restaurants = append(restaurants, restaurant)
 	}
 	err = rows.Err()
@@ -54,7 +53,7 @@ func GetRestaurants(c *gin.Context) ([]Restaurant, error) {
 func DeleteRestaurant(id int32, c *gin.Context) (*Restaurant, error) {
 	var deleted_restaurant Restaurant
 	row := dbpool.QueryRow(c, "DELETE FROM restaurants WHERE restaurantID = $1 RETURNING *;", id)
-	err := row.Scan(&deleted_restaurant.ID, &deleted_restaurant.Name, &deleted_restaurant.Location, &deleted_restaurant.Description, &deleted_restaurant.IsPremium)
+	err := row.Scan(&deleted_restaurant.ID, &deleted_restaurant.Name, &deleted_restaurant.Location, &deleted_restaurant.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +62,8 @@ func DeleteRestaurant(id int32, c *gin.Context) (*Restaurant, error) {
 
 func UpdateRestaurant(replaceWith *Restaurant, id int32, c *gin.Context) (*Restaurant, error) {
 	var new_restaurant Restaurant
-	row := dbpool.QueryRow(c, "UPDATE restaurants SET name=$2, location=$3, description=$4, isPremium=$5 where restaurantID=$1 RETURNING *;", id, replaceWith.Name, replaceWith.Location, replaceWith.Description, replaceWith.IsPremium)
-	err := row.Scan(&new_restaurant.ID, &new_restaurant.Name, &new_restaurant.Location, &new_restaurant.Description, &new_restaurant.IsPremium)
+	row := dbpool.QueryRow(c, "UPDATE restaurants SET name=$2, location=$3, description=$4, isPremium=$5 where restaurantID=$1 RETURNING *;", id, replaceWith.Name, replaceWith.Location, replaceWith.Description)
+	err := row.Scan(&new_restaurant.ID, &new_restaurant.Name, &new_restaurant.Location, &new_restaurant.Description)
 	if err != nil {
 		return nil, err
 	}

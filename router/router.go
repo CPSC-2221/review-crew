@@ -44,6 +44,10 @@ func InitRouter() *gin.Engine {
 	r.DELETE("/review/:id", deleteReview)
 	r.POST("/create-review-table", db.CreateReviewTable)
 
+	r.POST("/replies-to", postRepliesTo)
+	r.DELETE("/replies-to/:repliedTo/:repliesTo", deleteRepliesTo)
+	r.POST("/create-replies-to-table", db.CreateRepliesToTable)
+
 	r.POST("/has-pizza-image", postHasPizzaImage)
 	r.GET("/has-pizza-image/:name", getHasPizzaImage)
 	r.PUT("/has-pizza-image/:name", putHasPizzaImage)

@@ -7,18 +7,30 @@ import (
 )
 
 type Review struct {
-	ID                int32     `json:"id"`
-	Email             string    `json:"email"`
-	RestaurantID      int       `json:"restaurantID"`
-	Comment           string    `json:"comment"`
-	Datetime          time.Time `json:"datetime"`
-	RepliesToReviewID *int32    `json:"repliesTo"`
+	ID           int32     `json:"id"`
+	Email        string    `json:"email"`
+	RestaurantID int       `json:"restaurantID"`
+	Comment      string    `json:"comment"`
+	Datetime     time.Time `json:"datetime"`
 }
 
 func CreateReview(review Review, c *gin.Context) (*Review, error) {
 	var new_review Review
-	row := dbpool.QueryRow(c, "INSERT INTO review(id, email, restaurantID, comment, datetime) VALUES (DEFAULT, $1, $2, $3, $4) RETURNING *;", review.Email, review.RestaurantID, review.Comment, review.Datetime)
-	err := row.Scan(&new_review.ID, &new_review.Email, &new_review.RestaurantID, &new_review.Comment, &new_review.Datetime)
+	row := dbpool.QueryRow(
+		c,
+		"INSERT INTO review(reviewID, email, restaurantID, repliesToReviewID, comment, datetime) VALUES (DEFAULT, $1, $2, $3, $4, $5) RETURNING *;",
+		review.Email,
+		review.RestaurantID,
+		review.Comment,
+		review.Datetime,
+	)
+	err := row.Scan(
+		&new_review.ID,
+		&new_review.Email,
+		&new_review.RestaurantID,
+		&new_review.Comment,
+		&new_review.Datetime,
+	)
 	if err != nil {
 		return nil, err
 	}

@@ -68,12 +68,25 @@ func CreateReviewTable(c *gin.Context) {
 			"reviewID SERIAL PRIMARY KEY,"+
 			"email TEXT NOT NULL,"+
 			"restaurantID INTEGER NOT NULL,"+
-			"repliesToReviewID INTEGER,"+
 			"comment TEXT,"+
 			"datetime TIMESTAMPTZ,"+
 			"FOREIGN KEY(email) REFERENCES Users(email),"+
 			"FOREIGN KEY(restaurantID) REFERENCES restaurants(restaurantID),"+
-			"FOREIGN KEY(repliesToReviewID) REFERENCES review(reviewID)"+
+			");")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+}
+
+func CreateRepliesToTable(c *gin.Context) {
+	_, err := dbpool.Exec(c,
+		"CREATE TABLE repliesTo ("+
+			"repliesToReviewID INTEGER PRIMARY KEY,"+
+			"isRepliedToReviewID INTEGER PRIMARY KEY,"+
+			"FOREIGN KEY(repliesToReviewID) REFERENCES review(reviewID),"+
+			"FOREIGN KEY(isRepliedToReviewID) REFERENCES review(reviewID)"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
