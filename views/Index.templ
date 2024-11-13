@@ -1,22 +1,39 @@
 package views
 
 import "server-api/views/components"
+import "server-api/db"
 
-templ Index() {
+templ Index(restaurants []db.Restaurant) {
 	<!DOCTYPE html>
 	<html lang="en">
 		@header()
-		<body class="bg-primary h-screen">
+		<body class="bg-background h-screen">
 			@components.Navbar()
 			<div id="inner-body" class="h-fit w-[46rem] mx-auto mt-10 flex flex-col items-center">
-				@Home()
+				@Home(restaurants)
 			</div>
 		</body>
 	</html>
 }
 
-templ Home() {
+templ Home(restaurants []db.Restaurant) {
 	<div class="text-6xl text-primary font-semibold font-display">LOCATIONS</div>
+	@locations(restaurants)
+}
+
+templ locations(restaurants []db.Restaurant) {
+	<div class="w-full flex flex-col space-y-4">
+		for _, restaurant := range restaurants {
+			@location(restaurant)
+		}
+	</div>
+}
+
+templ location(restaurant db.Restaurant) {
+	<div class="rounded-lg w-full bg-tertiary flex flex-row justify-between py-32">
+		<div class="w-1/5">{ restaurant.Name }</div>
+		<div class="w-4/5">{ restaurant.Description }</div>
+	</div>
 }
 
 templ header() {

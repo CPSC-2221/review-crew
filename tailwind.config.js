@@ -1,4 +1,5 @@
-/** @type {import('tailwindcss').Config} */
+//@type {import('tailwindcss').Config}
+
 module.exports = {
   content: ["./views/**/*.{go,js,templ,html}"],
   theme: {
@@ -10,7 +11,7 @@ module.exports = {
       tertiary: "rgb(var(--color-tertiary))",
     },
     fontFamily: {
-      display: ["Kelsi", "display"],
+      display: ["Kelsi"],
     },
     extend: {},
   },

@@ -581,11 +581,11 @@ video {
 /*}*/
 
 :root {
-  --color-background: 255, 255, 255;
-  --color-primary: 0, 0, 0;
-  /*--color-secondary: 39, 62, 71;*/
-  /*--color-supporting: 216, 151, 60;*/
-  /*--color-tertiary: 189, 99, 47;*/
+  --color-primary: 164, 36, 59;
+  --color-secondary: 39, 62, 71;
+  --color-background: 216, 201, 155;
+  --color-supporting: 216, 151, 60;
+  --color-tertiary: 189, 99, 47;
 }
 
 .mx-2 {
@@ -632,6 +632,14 @@ video {
   height: 100vh;
 }
 
+.w-1\/5 {
+  width: 20%;
+}
+
+.w-4\/5 {
+  width: 80%;
+}
+
 .w-\[46rem\] {
   width: 46rem;
 }
@@ -674,12 +682,18 @@ video {
   justify-content: space-between;
 }
 
+.gap-1\.5 {
+  gap: 0.375rem;
+}
+
 .gap-1 {
   gap: 0.25rem;
 }
 
-.gap-1\.5 {
-  gap: 0.375rem;
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
 
 .rounded-lg {
@@ -702,10 +716,6 @@ video {
   background-color: rgb(var(--color-tertiary));
 }
 
-.bg-primary {
-  background-color: rgb(var(--color-primary));
-}
-
 .p-2 {
   padding: 0.5rem;
 }
@@ -715,8 +725,13 @@ video {
   padding-right: 0.75rem;
 }
 
+.py-32 {
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
 .font-display {
-  font-family: Kelsi, display;
+  font-family: Kelsi;
 }
 
 .text-6xl {

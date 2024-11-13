@@ -10,11 +10,27 @@ import (
 )
 
 func index(ctx *gin.Context) {
-	render.Render(ctx, http.StatusOK, views.Index())
+	res, err := db.GetRestaurants(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	render.Render(ctx, http.StatusOK, views.Index(res))
 }
 
 func home(ctx *gin.Context) {
-	render.Render(ctx, http.StatusOK, views.Home())
+	res, err := db.GetRestaurants(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	render.Render(ctx, http.StatusOK, views.Home(res))
 }
 
 func getUsers(ctx *gin.Context) {
