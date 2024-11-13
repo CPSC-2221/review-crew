@@ -39,7 +39,7 @@ func CreateReview(review Review, c *gin.Context) (*Review, error) {
 
 func GetReview(id int32, c *gin.Context) (*Review, error) {
 	var review Review
-	row := dbpool.QueryRow(c, "SELECT * FROM review WHERE id = $1;", id)
+	row := dbpool.QueryRow(c, "SELECT * FROM review WHERE reviewID = $1;", id)
 	err := row.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime)
 	if err != nil {
 		return nil, err

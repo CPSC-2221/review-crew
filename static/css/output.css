@@ -554,12 +554,38 @@ video {
   display: none;
 }
 
+@font-face {
+  font-family: "Kelsi";
+
+  font-style: normal;
+
+  font-display: block;
+
+  font-weight: normal;
+
+  src: url("../../static/fonts/Kelsi-Regular.otf") format("otf");
+}
+
+/*@font-face {*/
+
+/*  font-family: "Kelsi";*/
+
+/*  font-style: filled;*/
+
+/*  font-display: block;*/
+
+/*  font-weight: normal;*/
+
+/*  src: url("../../static/fonts/Kelsi-fill.otf") format("otf");*/
+
+/*}*/
+
 :root {
-  --color-primary: 164, 36, 59;
-  --color-secondary: 39, 62, 71;
-  --color-background: 216, 201, 155;
-  --color-supporting: 216, 151, 60;
-  --color-tertiary: 189, 99, 47;
+  --color-background: 255, 255, 255;
+  --color-primary: 0, 0, 0;
+  /*--color-secondary: 39, 62, 71;*/
+  /*--color-supporting: 216, 151, 60;*/
+  /*--color-tertiary: 189, 99, 47;*/
 }
 
 .mx-2 {
@@ -676,6 +702,10 @@ video {
   background-color: rgb(var(--color-tertiary));
 }
 
+.bg-primary {
+  background-color: rgb(var(--color-primary));
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -683,6 +713,10 @@ video {
 .px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+}
+
+.font-display {
+  font-family: Kelsi, display;
 }
 
 .text-6xl {

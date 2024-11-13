@@ -9,6 +9,9 @@ module.exports = {
       supporting: "rgb(var(--color-supporting))",
       tertiary: "rgb(var(--color-tertiary))",
     },
+    fontFamily: {
+      display: ["Kelsi", "display"],
+    },
     extend: {},
   },
   plugins: [],

@@ -4,10 +4,10 @@ var navbarClass = "px-3 mx-2 bg-tertiary hover:bg-secondary font-bold text-secon
 
 templ Navbar() {
 	<div class="w-full flex flex-row justify-between select-none">
-		<div class="flex flex-row h-14 items-center">
+		<div hx-boost="true" class="flex flex-row h-14 items-center">
 			<div class="text-primary font-black mx-3">LOGO</div>
-			<div hx-get="/home" hx-target="#inner-body" class={ navbarClass }>home</div>
-			<div hx-get="/users" hx-target="#inner-body" class={ navbarClass }>users</div>
+			<a href="/home" hx-target="#inner-body" class={ navbarClass }>home</a>
+			<a href="/users" hx-target="#inner-body" class={ navbarClass }>users</a>
 		</div>
 		<div class="flex flex-row h-14 items-center">
 			<div class={ navbarClass }>log in</div>

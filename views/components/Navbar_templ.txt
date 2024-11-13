@@ -1,0 +1,7 @@
+<div class=\"w-full flex flex-row justify-between select-none\"><div hx-boost=\"true\" class=\"flex flex-row h-14 items-center\"><div class=\"text-primary font-black mx-3\">LOGO</div>
+<a href=\"/home\" hx-target=\"#inner-body\" class=\"
+\">home</a> 
+<a href=\"/users\" hx-target=\"#inner-body\" class=\"
+\">users</a></div><div class=\"flex flex-row h-14 items-center\">
+<div class=\"
+\">log in</div></div></div>
