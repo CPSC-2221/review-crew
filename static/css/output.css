@@ -581,11 +581,13 @@ video {
 /*}*/
 
 :root {
-  --color-primary: 164, 36, 59;
-  --color-secondary: 39, 62, 71;
-  --color-background: 216, 201, 155;
-  --color-supporting: 216, 151, 60;
-  --color-tertiary: 189, 99, 47;
+  --color-primary: #a4243b;
+  --color-secondary: #273e47;
+  --color-background: #d8c99b;
+  --color-supporting: #d8973c;
+  --color-tertiary: #c87135;
+  --color-tertiary-hover: #d99048;
+  --color-tertiary-click: #af5332;
 }
 
 .mx-2 {
@@ -601,6 +603,11 @@ video {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .mb-8 {
@@ -632,8 +639,8 @@ video {
   height: 100vh;
 }
 
-.w-1\/5 {
-  width: 20%;
+.w-0 {
+  width: 0px;
 }
 
 .w-4\/5 {
@@ -646,6 +653,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.flex-initial {
+  flex: 0 1 auto;
 }
 
 .cursor-pointer {
@@ -686,14 +697,14 @@ video {
   gap: 0.375rem;
 }
 
-.gap-1 {
-  gap: 0.25rem;
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 
-.space-y-4 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+.rounded-full {
+  border-radius: 9999px;
 }
 
 .rounded-lg {
@@ -704,16 +715,24 @@ video {
   border-radius: 0.375rem;
 }
 
+.border-2 {
+  border-width: 2px;
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
 .bg-background {
-  background-color: rgb(var(--color-background));
+  background-color: var(--color-background);
 }
 
 .bg-supporting {
-  background-color: rgb(var(--color-supporting));
+  background-color: var(--color-supporting);
 }
 
 .bg-tertiary {
-  background-color: rgb(var(--color-tertiary));
+  background-color: var(--color-tertiary);
 }
 
 .p-2 {
@@ -725,9 +744,19 @@ video {
   padding-right: 0.75rem;
 }
 
-.py-32 {
-  padding-top: 8rem;
-  padding-bottom: 8rem;
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .font-display {
@@ -737,6 +766,11 @@ video {
 .text-6xl {
   font-size: 3.75rem;
   line-height: 1;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .font-black {
@@ -752,17 +786,34 @@ video {
 }
 
 .text-primary {
-  color: rgb(var(--color-primary));
+  color: var(--color-primary);
 }
 
 .text-secondary {
-  color: rgb(var(--color-secondary));
+  color: var(--color-secondary);
 }
 
 .hover\:bg-secondary:hover {
-  background-color: rgb(var(--color-secondary));
+  background-color: var(--color-secondary);
+}
+
+.hover\:bg-tertiaryhover:hover {
+  background-color: var(--color-tertiary-hover);
 }
 
 .hover\:text-tertiary:hover {
-  color: rgb(var(--color-tertiary));
+  color: var(--color-tertiary);
+}
+
+.hover\:text-secondary:hover {
+  color: var(--color-secondary);
+}
+
+.active\:bg-tertiaryclick:active {
+  background-color: var(--color-tertiary-click);
+}
+
+.active\:bg-\[\#000000\]:active {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }

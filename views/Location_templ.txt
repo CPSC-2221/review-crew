@@ -1,0 +1,2 @@
+<div class=\"text-6xl text-primary font-semibold mb-8\">
+</div>

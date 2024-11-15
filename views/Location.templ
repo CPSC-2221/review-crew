@@ -1,0 +1,7 @@
+package views
+
+import "server-api/db"
+
+templ Location(location *db.Restaurant) {
+	<div class="text-6xl text-primary font-semibold mb-8">{ location.Name }</div>
+}

@@ -13,6 +13,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/", index)
 	r.GET("/users", getUsers)
 	r.GET("/home", home)
+	r.GET("/location/:id", getLocation)
 
 	r.POST("/user", postUser)
 	r.GET("/user/:email", getUser)
@@ -33,7 +34,6 @@ func InitRouter() *gin.Engine {
 	r.POST("/create-manages-table", db.CreateManagesTable)
 
 	r.POST("/restaurant", postRestaurant)
-	r.GET("/restaurant/:id", getRestaurant)
 	r.PUT("/restaurant/:id", putRestaurant)
 	r.DELETE("/restaurant/:id", deleteRestaurant)
 	r.POST("/create-restaurant-table", db.CreateRestaurantTable)

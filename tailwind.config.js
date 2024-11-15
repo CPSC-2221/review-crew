@@ -4,11 +4,13 @@ module.exports = {
   content: ["./views/**/*.{go,js,templ,html}"],
   theme: {
     colors: {
-      primary: "rgb(var(--color-primary))",
-      secondary: "rgb(var(--color-secondary))",
-      background: "rgb(var(--color-background))",
-      supporting: "rgb(var(--color-supporting))",
-      tertiary: "rgb(var(--color-tertiary))",
+      primary: "var(--color-primary)",
+      secondary: "var(--color-secondary)",
+      background: "var(--color-background)",
+      supporting: "var(--color-supporting)",
+      tertiary: "var(--color-tertiary)",
+      tertiaryhover: "var(--color-tertiary-hover)",
+      tertiaryclick: "var(--color-tertiary-click)",
     },
     fontFamily: {
       display: ["Kelsi"],
