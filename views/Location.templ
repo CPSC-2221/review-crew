@@ -1,7 +1,50 @@
 package views
 
 import "server-api/db"
+import "github.com/gin-gonic/gin"
 
 templ Location(location *db.Restaurant) {
-	<div class="text-6xl text-primary font-semibold mb-8">{ location.Name }</div>
+	<div class="text-8xl text-primary font-semibold mb-2 font-display self-start">{ location.Name }</div>
+	<div class="self-start border-tertiary border-2 text-tertiary font-bold p-1 rounded-lg mb-6">{ location.Location }</div>
+	<div class="self-start text-lg min-h-[30vh] text-secondary">{ location.Description }</div>
+	<div class="gap-5 self-start w-full flex flex-col">
+		@RT(true)
+		@RT(false)
+	</div>
+}
+
+func getUsername(email string) string {
+	usr, _ := db.GetUser(email, &gin.Context{})
+	return usr.Username
+}
+
+templ Review(review *db.Review) {
+	{ getUsername(review.Email) }
+}
+
+templ RT(yes bool) {
+	<div class="w-full flex flex-col gap-1">
+		<div class="p-3 border-tertiary rounded-lg border-4 w-full">
+			<div class="w-full flex justify-between">
+				<div><span class="font-bold">Name</span> - <span class="text-[#777777]">Date</span></div>
+				<button class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Reply</button>
+			</div>
+			<div>Message lorum ipsum dolor sit amet.</div>
+		</div>
+		@Reply()
+		@Reply()
+	</div>
+}
+
+templ Reply() {
+	<div class="flex flex-row w-full">
+		<div class="w-16">
+			<div class="w-1/2 border-r-4 h-full border-tertiary"></div>
+			<div class="w-1/2"></div>
+		</div>
+		<div class="flex flex-col gap-1 p-3 border-tertiary rounded-lg border-4 w-full">
+			<div class="w-full"><span class="font-bold">Name</span> - <span class="text-[#777777]">Date</span></div>
+			<div>Message lorum ipsum dolor sit amet.</div>
+		</div>
+	</div>
 }

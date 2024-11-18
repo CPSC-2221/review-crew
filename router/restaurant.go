@@ -3,33 +3,10 @@ package router
 import (
 	"net/http"
 	"server-api/db"
-	"server-api/render"
-	"server-api/views"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-func getLocation(ctx *gin.Context) {
-	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	id := int32(id_32)
-
-	res, err := db.GetRestaurant(id, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	render.Render(ctx, http.StatusOK, views.Location(res))
-}
 
 func postRestaurant(ctx *gin.Context) {
 	var restaurant db.Restaurant

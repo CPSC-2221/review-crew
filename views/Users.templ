@@ -3,7 +3,7 @@ package views
 import "server-api/db"
 
 templ Users(users []db.User) {
-	<div class="text-6xl text-primary font-semibold mb-8">USERS</div>
+	<div class="text-6xl text-primary font-semibold mb-8">users</div>
 	for _, userdata := range users {
 		@user(userdata)
 	}

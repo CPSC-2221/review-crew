@@ -11,9 +11,9 @@ func InitRouter() *gin.Engine {
 	r.Static("static", "static")
 
 	r.GET("/", index)
-	r.GET("/users", getUsers)
+	r.GET("/users", renderUsers)
 	r.GET("/home", home)
-	r.GET("/location/:id", getLocation)
+	r.GET("/location/:id", renderLocation)
 
 	r.POST("/user", postUser)
 	r.GET("/user/:email", getUser)
