@@ -19,7 +19,7 @@ func postRepliesTo(ctx *gin.Context) {
 		return
 	}
 
-	res, err := db.CreateRepliesTo(repliesTo, ctx)
+	res, err := db.CreateRepliesTo(ctx, repliesTo)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -49,7 +49,7 @@ func deleteRepliesTo(ctx *gin.Context) {
 	}
 	repliedTo := int32(repliedTo_32)
 	repliesTo := int32(repliesTo_32)
-	res, err := db.DeleteRepliesTo(repliesTo, repliedTo, ctx)
+	res, err := db.DeleteRepliesTo(ctx, repliesTo, repliedTo)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

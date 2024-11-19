@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import "server-api/views/components"
 import "server-api/db"
 import "fmt"
+import "strings"
 
 func Index(inside templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -174,7 +175,7 @@ func location(restaurant db.Restaurant) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(restaurant.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Index.templ`, Line: 35, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Index.templ`, Line: 36, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -185,9 +186,9 @@ func location(restaurant db.Restaurant) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(restaurant.Description)
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Split(restaurant.Description, ".")[0] + ".")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Index.templ`, Line: 37, Col: 83}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Index.templ`, Line: 38, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {

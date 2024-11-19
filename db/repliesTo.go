@@ -9,7 +9,7 @@ type RepliesTo struct {
 	IsRepliedToReviewID int32 `json:"isRepliedTo"`
 }
 
-func CreateRepliesTo(repliesTo RepliesTo, c *gin.Context) (*RepliesTo, error) {
+func CreateRepliesTo(c *gin.Context, repliesTo RepliesTo) (*RepliesTo, error) {
 	var new_repliesTo RepliesTo
 	row := dbpool.QueryRow(
 		c,
@@ -24,8 +24,8 @@ func CreateRepliesTo(repliesTo RepliesTo, c *gin.Context) (*RepliesTo, error) {
 	return &new_repliesTo, nil
 }
 
-func GetRepliesToAReview(reviewID int32, c *gin.Context) ([]RepliesTo, error) {
-	rows, err := dbpool.Query(c, "SELECT * FROM repliesTo WHERE isRepliedTo = $1;", reviewID)
+func GetRepliesToAReview(c *gin.Context, reviewID int32) ([]RepliesTo, error) {
+	rows, err := dbpool.Query(c, "SELECT * FROM repliesTo WHERE isRepliedToReviewID = $1;", reviewID)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,15 @@ func GetRepliesToAReview(reviewID int32, c *gin.Context) ([]RepliesTo, error) {
 	return replies, nil
 }
 
-func DeleteRepliesTo(replyToReviewID int32, isRepliedToReviewID int32, c *gin.Context) (*RepliesTo, error) {
+func IsReplyingToAReview(c *gin.Context, reviewID int32) bool {
+	row := dbpool.QueryRow(c, "SELECT * FROM repliesTo WHERE repliesToReviewID = $1;", reviewID)
+	if row == nil {
+		return false
+	}
+	return true
+}
+
+func DeleteRepliesTo(c *gin.Context, replyToReviewID int32, isRepliedToReviewID int32) (*RepliesTo, error) {
 	var deleted_repliesTo RepliesTo
 	row := dbpool.QueryRow(c, "DELETE FROM repliesTo WHERE repliesToReviewID = $1 AND isRepliedToReviewID = $2 RETURNING *;", replyToReviewID, isRepliedToReviewID)
 	err := row.Scan(&deleted_repliesTo.RepliesToReviewID, &deleted_repliesTo.IsRepliedToReviewID)
