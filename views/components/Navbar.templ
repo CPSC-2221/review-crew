@@ -1,16 +1,26 @@
 package components
 
+import "server-api/db"
+
 var navbarClass = "px-3 mx-2 bg-tertiary hover:bg-secondary font-bold text-secondary hover:text-tertiary h-11 flex flex-col justify-center content-center rounded-lg cursor-pointer"
 
-templ Navbar() {
-	<div class="px-5 w-full flex flex-row justify-between select-none">
-		<div hx-boost="true" class="flex flex-row h-14 items-center">
+templ Navbar(account *db.User) {
+	<div hx-boost="true" class="px-5 w-full flex flex-row justify-between select-none">
+		<div class="flex flex-row h-14 items-center">
 			<div class="text-primary font-black mx-3">LOGO</div>
 			<a href="/" class={ navbarClass }>home</a>
 			<a href="/users" hx-target="#inner-body" class={ navbarClass }>users</a>
 		</div>
-		<div class="flex flex-row h-14 items-center">
-			<div class={ navbarClass }>log in</div>
-		</div>
+		if account == nil {
+			<div class="flex flex-row h-14 items-center">
+				<a href="/login" hx-target="#inner-body" class={ navbarClass }>log in</a>
+				<a href="/signup" hx-target="#inner-body" class={ navbarClass }>sign up</a>
+			</div>
+		} else {
+			<div class="flex flex-row h-14 items-center">
+				<p>{ account.Username }</p>
+				<button hx-get="/logout" class={ navbarClass }>logout</button>
+			</div>
+		}
 	</div>
 }

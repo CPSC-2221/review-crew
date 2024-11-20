@@ -10,7 +10,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func getUserFromCookie(ctx *gin.Context) (*db.User, error) {
+	var usr *db.User = nil
+
+	email, err := ctx.Cookie("auth")
+	if err != nil {
+		println("error fetching cookie: " + err.Error())
+		return nil, err
+	}
+
+	usr, err = db.GetUser(email, ctx)
+	if err != nil {
+		println("error fetching user: " + err.Error())
+		return nil, err
+	}
+
+	return usr, nil
+}
+
 func index(ctx *gin.Context) {
+	usr, _ := getUserFromCookie(ctx)
+	renderIndex(ctx, usr)
+}
+
+func renderIndex(ctx *gin.Context, usr *db.User) {
 	res, err := db.GetRestaurants(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -19,7 +42,7 @@ func index(ctx *gin.Context) {
 		return
 	}
 
-	render.Render(ctx, http.StatusOK, views.Index(views.Home(res)))
+	render.Render(ctx, http.StatusOK, views.Index(views.Home(res), usr))
 }
 
 func home(ctx *gin.Context) {
@@ -46,7 +69,8 @@ func renderUsers(ctx *gin.Context) {
 	if ctx.GetHeader("HX-Request") == "true" {
 		render.Render(ctx, http.StatusOK, views.Users(res))
 	} else {
-		render.Render(ctx, http.StatusOK, views.Index(views.Users(res)))
+		usr, _ := getUserFromCookie(ctx)
+		render.Render(ctx, http.StatusOK, views.Index(views.Users(res), usr))
 	}
 }
 
@@ -68,9 +92,46 @@ func renderLocation(ctx *gin.Context) {
 		return
 	}
 
+	usr, _ := getUserFromCookie(ctx)
 	if ctx.GetHeader("HX-Request") == "true" {
-		render.Render(ctx, http.StatusOK, views.Location(res))
+		render.Render(ctx, http.StatusOK, views.Location(res, usr))
 	} else {
-		render.Render(ctx, http.StatusOK, views.Index(views.Location(res)))
+		render.Render(ctx, http.StatusOK, views.Index(views.Location(res, usr), usr))
 	}
+}
+
+func signUp(ctx *gin.Context) {
+	usr, _ := getUserFromCookie(ctx)
+	if usr != nil {
+		renderIndex(ctx, usr)
+		return
+	}
+
+	if ctx.GetHeader("HX-Request") == "true" {
+		render.Render(ctx, http.StatusOK, views.SignUp())
+	} else {
+		render.Render(ctx, http.StatusOK, views.Index(views.SignUp(), usr))
+	}
+}
+
+func renderSignUp(ctx *gin.Context, errors ...string) {
+	render.Render(ctx, http.StatusOK, views.SignUp(errors...))
+}
+
+func logIn(ctx *gin.Context) {
+	usr, _ := getUserFromCookie(ctx)
+	if usr != nil {
+		renderIndex(ctx, usr)
+		return
+	}
+
+	if ctx.GetHeader("HX-Request") == "true" {
+		render.Render(ctx, http.StatusOK, views.LogIn())
+	} else {
+		render.Render(ctx, http.StatusOK, views.Index(views.LogIn(), usr))
+	}
+}
+
+func renderLogIn(ctx *gin.Context, errors ...string) {
+	render.Render(ctx, http.StatusOK, views.LogIn(errors...))
 }

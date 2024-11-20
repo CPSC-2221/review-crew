@@ -4,9 +4,32 @@ import (
 	"net/http"
 	"server-api/db"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+func createReview(ctx *gin.Context) {
+	var review db.Review
+	review.Email = ctx.PostForm("email")
+	review.Comment = ctx.PostForm("comment")
+
+	review.Datetime = time.Now()
+
+	ridstr := ctx.PostForm("restaurantID")
+	rid, _ := strconv.ParseInt(string(ridstr), 10, 32)
+	review.RestaurantID = int(rid)
+
+	_, err := db.CreateReview(review, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.Header("HX-Refresh", "true")
+}
 
 func postReview(ctx *gin.Context) {
 	var review db.Review

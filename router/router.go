@@ -12,14 +12,18 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/", index)
 	r.GET("/users", renderUsers)
-	r.GET("/home", home)
 	r.GET("/location/:id", renderLocation)
+	r.GET("/signup", signUp)
+	r.GET("/login", logIn)
+	r.GET("/logout", logout)
 
 	r.POST("/user", postUser)
 	r.GET("/user/:email", getUser)
 	r.PUT("/user/:email", putUser)
 	r.DELETE("/user/:email", deleteUser)
 	r.POST("/create-user-table", db.CreateUsersTable)
+	r.POST("/createuser", createNewUser)
+	r.POST("/loginuser", loginUser)
 
 	r.POST("/owns", postOwn)
 	r.GET("/owns/:email/:restaurantID", getOwn)
@@ -43,6 +47,7 @@ func InitRouter() *gin.Engine {
 	r.PUT("/review/:id", putReview)
 	r.DELETE("/review/:id", deleteReview)
 	r.POST("/create-review-table", db.CreateReviewTable)
+	r.POST("/createreview", createReview)
 
 	r.POST("/replies-to", postRepliesTo)
 	r.DELETE("/replies-to/:repliedTo/:repliesTo", deleteRepliesTo)
@@ -66,4 +71,9 @@ func InitRouter() *gin.Engine {
 	r.POST("/create-has-burger-emoji-table", db.CreateHasBurgerEmojiTable)
 
 	return r
+}
+
+func logout(ctx *gin.Context) {
+	ctx.SetCookie("auth", "", 0, "", "", false, true)
+	ctx.Header("HX-Refresh", "true")
 }

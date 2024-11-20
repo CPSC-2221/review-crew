@@ -2,41 +2,18 @@ package views
 
 import "server-api/views/components"
 import "server-api/db"
-import "fmt"
-import "strings"
 
-templ Index(inside templ.Component) {
+templ Index(inside templ.Component, account *db.User) {
 	<!DOCTYPE html>
 	<html lang="en">
 		@header()
 		<body class="bg-background h-screen">
-			@components.Navbar()
+			@components.Navbar(account)
 			<div id="inner-body" class="h-fit w-[46rem] mx-auto mt-10 flex flex-col items-center">
 				@inside
 			</div>
 		</body>
 	</html>
-}
-
-templ Home(restaurants []db.Restaurant) {
-	<div class="text-6xl text-primary font-semibold font-display">LOCATIONS</div>
-	@locations(restaurants)
-}
-
-templ locations(restaurants []db.Restaurant) {
-	<div class="w-full flex flex-col space-y-6 mt-10">
-		for _, restaurant := range restaurants {
-			@location(restaurant)
-		}
-	</div>
-}
-
-templ location(restaurant db.Restaurant) {
-	<a hx-boost="true" href={ templ.URL(fmt.Sprintf("/location/%b", restaurant.ID)) } hx-target="#inner-body" class="rounded-lg w-full bg-tertiary text-secondary hover:bg-secondary hover:text-tertiary active:bg-[#000000] flex flex-row font-sans cursor-pointer">
-		<div class="px-6 min-w-1/5 font-black text-xl py-10">{ restaurant.Name }</div>
-		<div class="w-0 rounded-full border-2 my-5 border-primary"></div>
-		<div class="px-4 w-4/5 flex-initial py-10 font-semibold">{ strings.Split(restaurant.Description, ".")[0] + "." }</div>
-	</a>
 }
 
 templ header() {

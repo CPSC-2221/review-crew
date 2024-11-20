@@ -22,7 +22,7 @@ func CreateUser(user User, c *gin.Context) (*User, error) {
 func GetUser(email string, c *gin.Context) (*User, error) {
 	var user User
 	row := dbpool.QueryRow(c, "SELECT * FROM users WHERE email = $1;", email)
-	err := row.Scan(&user.Username, &user.Email)
+	err := row.Scan(&user.Email, &user.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func GetUsers(c *gin.Context) ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var user User
-		rows.Scan(&user.Username, &user.Email)
+		rows.Scan(&user.Email, &user.Username)
 		users = append(users, user)
 	}
 	err = rows.Err()
