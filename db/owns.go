@@ -48,10 +48,10 @@ func GetUserOwnedRestaurants(email string, c *gin.Context) []int32 {
 	return owns
 }
 
-func GetUsersThatCanEditDesciption(restaurantID int32, c *gin.Context) []string {
-	rows, err := dbpool.Query(c, "SELECT DISTINCT u.email FROM users u, owns o, manages m WHERE (u.email = o.email OR u.email = m.email) AND (o.restaurantID = $1 OR (m.restaurantID = $1 AND m.canUpdateListing));", restaurantID)
+func GetUsersThatCanEditDesciption(restaurantID int32, c *gin.Context) ([]string, error) {
+	rows, err := dbpool.Query(c, "SELECT email FROM owns WHERE restaurantID = $1 UNION SELECT email from manages WHERE restaurantID = $1 AND canUpdateListing;", restaurantID)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	var emails []string
@@ -62,13 +62,13 @@ func GetUsersThatCanEditDesciption(restaurantID int32, c *gin.Context) []string 
 	}
 	err = rows.Err()
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return emails
+	return emails, nil
 }
 
 func GetUsersThatCanDeleteReviews(restaurantID int32, c *gin.Context) []string {
-	rows, err := dbpool.Query(c, "SELECT DISTINCT u.email FROM users u, owns o, manages m WHERE (u.email = o.email OR u.email = m.email) AND (o.restaurantID = $1 OR (m.restaurantID = $1 AND m.canDeleteComments));", restaurantID)
+	rows, err := dbpool.Query(c, "SELECT email FROM owns WHERE restaurantID = $1 UNION SELECT email from manages WHERE restaurantID = $1 AND canDeleteComments;", restaurantID)
 	if err != nil {
 		return nil
 	}

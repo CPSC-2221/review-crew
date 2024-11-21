@@ -8,7 +8,7 @@ import (
 
 func CreateUsersTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE users ("+
+		"CREATE TABLE IF NOT EXISTS users ("+
 			"email TEXT PRIMARY KEY,"+
 			"username TEXT UNIQUE NOT NULL"+
 			");")
@@ -21,7 +21,7 @@ func CreateUsersTable(c *gin.Context) {
 
 func CreateRestaurantTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE restaurants ("+
+		"CREATE TABLE IF NOT EXISTS restaurants ("+
 			"restaurantID SERIAL PRIMARY KEY,"+
 			"name TEXT NOT NULL UNIQUE,"+
 			"location TEXT NOT NULL,"+
@@ -36,7 +36,7 @@ func CreateRestaurantTable(c *gin.Context) {
 
 func CreateHasPizzaImageTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE hasPizzaImage ("+
+		"CREATE TABLE IF NOT EXISTS hasPizzaImage ("+
 			"name TEXT PRIMARY KEY,"+
 			"hasPizzaImage BOOLEAN NOT NULL,"+
 			"FOREIGN KEY(name) REFERENCES restaurants(name)"+
@@ -50,7 +50,7 @@ func CreateHasPizzaImageTable(c *gin.Context) {
 
 func CreateHasBurgerEmojiTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE hasBurgerEmoji ("+
+		"CREATE TABLE IF NOT EXISTS hasBurgerEmoji ("+
 			"username TEXT PRIMARY KEY,"+
 			"hasBurgerEmoji BOOLEAN NOT NULL,"+
 			"FOREIGN KEY(username) REFERENCES users(username)"+
@@ -64,7 +64,7 @@ func CreateHasBurgerEmojiTable(c *gin.Context) {
 
 func CreateReviewTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE review ("+
+		"CREATE TABLE IF NOT EXISTS review ("+
 			"reviewID SERIAL PRIMARY KEY,"+
 			"email TEXT NOT NULL,"+
 			"restaurantID INTEGER NOT NULL,"+
@@ -82,7 +82,7 @@ func CreateReviewTable(c *gin.Context) {
 
 func CreateRepliesToTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE repliesTo ("+
+		"CREATE TABLE IF NOT EXISTS repliesTo ("+
 			"repliesToReviewID INTEGER,"+
 			"isRepliedToReviewID INTEGER,"+
 			"PRIMARY KEY (repliesToReviewID, isRepliedToReviewID),"+
@@ -98,7 +98,7 @@ func CreateRepliesToTable(c *gin.Context) {
 
 func CreateManagesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE manages ("+
+		"CREATE TABLE IF NOT EXISTS manages ("+
 			"email TEXT NOT NULL,"+
 			"restaurantID INTEGER NOT NULL,"+
 			"CanDeleteComments BOOLEAN NOT NULL,"+
@@ -116,7 +116,7 @@ func CreateManagesTable(c *gin.Context) {
 
 func CreateLikesTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE likes ("+
+		"CREATE TABLE IF NOT EXISTS likes ("+
 			"reviewID INTEGER NOT NULL,"+
 			"email TEXT NOT NULL,"+
 			"PRIMARY KEY (reviewID, email),"+
@@ -132,7 +132,7 @@ func CreateLikesTable(c *gin.Context) {
 
 func CreateOwnsTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
-		"CREATE TABLE owns ("+
+		"CREATE TABLE IF NOT EXISTS owns ("+
 			"email TEXT NOT NULL,"+
 			"restaurantID INTEGER,"+
 			"PRIMARY KEY (email, restaurantID),"+

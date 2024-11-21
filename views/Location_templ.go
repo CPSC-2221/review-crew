@@ -61,7 +61,7 @@ func getReplyCount(reviewID int32) int {
 }
 
 func getCanEdit(email string, restaurantID int32) bool {
-	list := db.GetUsersThatCanEditDesciption(restaurantID, &gin.Context{})
+	list, _ := db.GetUsersThatCanEditDesciption(restaurantID, &gin.Context{})
 	return slices.Contains(list, email)
 }
 

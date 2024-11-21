@@ -33,8 +33,7 @@ func createNewUser(ctx *gin.Context) {
 	}
 
 	ctx.SetCookie("auth", usr.Email, 2592000, "", "", false, true)
-	ctx.Header("HX-Replace-Url", "/")
-	home(ctx)
+	ctx.Header("HX-Redirect", "/")
 }
 
 func loginUser(ctx *gin.Context) {

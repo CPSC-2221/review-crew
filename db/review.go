@@ -69,7 +69,7 @@ func GetReviews(c *gin.Context) ([]Review, error) {
 }
 
 func GetRestaurantReviews(c *gin.Context, restaurantID int32) ([]Review, error) {
-	rows, err := dbpool.Query(c, "SELECT * FROM review where restaurantID = $1;", restaurantID)
+	rows, err := dbpool.Query(c, "SELECT * FROM review where restaurantID = $1 AND reviewID NOT IN (SELECT repliesToReviewID FROM repliesTo);", restaurantID)
 	if err != nil {
 		return nil, err
 	}

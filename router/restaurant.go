@@ -62,6 +62,18 @@ func createRestaurant(ctx *gin.Context) {
 		return
 	}
 
+	usr, _ := getUserFromCookie(ctx)
+	println(usr.Email)
+	resown, err := db.CreateOwn(db.Own{
+		Email:        usr.Email,
+		RestaurantID: res.ID,
+	}, ctx)
+	if err != nil {
+		panic(err)
+	}
+	println(resown.Email)
+	println(resown.RestaurantID)
+
 	ctx.Header("HX-Redirect", "/location/"+strconv.Itoa(int(res.ID)))
 }
 

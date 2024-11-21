@@ -18,6 +18,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/logout", logout)
 	r.POST("/openreply", openReply)
 	r.GET("/createRestaurant", gotoCreateRestaurant)
+	r.GET("/maketables", setup)
 
 	r.POST("/user", postUser)
 	r.GET("/user/:email", getUser)
@@ -84,4 +85,16 @@ func InitRouter() *gin.Engine {
 func logout(ctx *gin.Context) {
 	ctx.SetCookie("auth", "", 0, "", "", false, true)
 	ctx.Header("HX-Refresh", "true")
+}
+
+func setup(ctx *gin.Context) {
+	db.CreateUsersTable(ctx)
+	db.CreateRestaurantTable(ctx)
+	db.CreateHasPizzaImageTable(ctx)
+	db.CreateHasBurgerEmojiTable(ctx)
+	db.CreateReviewTable(ctx)
+	db.CreateRepliesToTable(ctx)
+	db.CreateManagesTable(ctx)
+	db.CreateLikesTable(ctx)
+	db.CreateOwnsTable(ctx)
 }
