@@ -135,3 +135,29 @@ func logIn(ctx *gin.Context) {
 func renderLogIn(ctx *gin.Context, errors ...string) {
 	render.Render(ctx, http.StatusOK, views.LogIn(errors...))
 }
+
+func openReply(ctx *gin.Context) {
+	usr, _ := getUserFromCookie(ctx)
+	if usr == nil {
+		return
+	}
+	render.Render(ctx, http.StatusOK, views.ReplyInput(usr.Email, ctx.PostForm("locationID"), ctx.PostForm("reviewID")))
+}
+
+func gotoCreateRestaurant(ctx *gin.Context) {
+	usr, _ := getUserFromCookie(ctx)
+	if usr == nil {
+		renderIndex(ctx, usr)
+		return
+	}
+
+	if ctx.GetHeader("HX-Request") == "true" {
+		render.Render(ctx, http.StatusOK, views.CreateRestaurant())
+	} else {
+		render.Render(ctx, http.StatusOK, views.Index(views.CreateRestaurant(), usr))
+	}
+}
+
+func renderCreateRestaurant(ctx *gin.Context, errors ...string) {
+	render.Render(ctx, http.StatusOK, views.CreateRestaurant(errors...))
+}

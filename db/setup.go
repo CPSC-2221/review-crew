@@ -86,8 +86,8 @@ func CreateRepliesToTable(c *gin.Context) {
 			"repliesToReviewID INTEGER,"+
 			"isRepliedToReviewID INTEGER,"+
 			"PRIMARY KEY (repliesToReviewID, isRepliedToReviewID),"+
-			"FOREIGN KEY(repliesToReviewID) REFERENCES review(reviewID),"+
-			"FOREIGN KEY(isRepliedToReviewID) REFERENCES review(reviewID)"+
+			"FOREIGN KEY(repliesToReviewID) REFERENCES review(reviewID) ON DELETE CASCADE,"+
+			"FOREIGN KEY(isRepliedToReviewID) REFERENCES review(reviewID) ON DELETE CASCADE"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -104,8 +104,8 @@ func CreateManagesTable(c *gin.Context) {
 			"CanDeleteComments BOOLEAN NOT NULL,"+
 			"CanUpdateListing BOOLEAN,"+
 			"PRIMARY KEY (email, restaurantID),"+
-			"FOREIGN KEY (email) REFERENCES users(email),"+
-			"FOREIGN KEY (restaurantID) REFERENCES restaurants(restaurantID)"+
+			"FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE,"+
+			"FOREIGN KEY (restaurantID) REFERENCES restaurants(restaurantID) ON DELETE CASCADE"+
 			");")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -120,7 +120,7 @@ func CreateLikesTable(c *gin.Context) {
 			"reviewID INTEGER NOT NULL,"+
 			"email TEXT NOT NULL,"+
 			"PRIMARY KEY (reviewID, email),"+
-			"FOREIGN KEY (reviewID) REFERENCES review(reviewID),"+
+			"FOREIGN KEY (reviewID) REFERENCES review(reviewID) ON DELETE CASCADE,"+
 			"FOREIGN KEY (email) REFERENCES users(email)"+
 			");")
 	if err != nil {

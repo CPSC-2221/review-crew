@@ -8,7 +8,9 @@
 \">log in</a> 
 <a href=\"/signup\" hx-target=\"#inner-body\" class=\"
 \">sign up</a></div>
-<div class=\"flex flex-row h-14 items-center\"><p>
+<div class=\"flex flex-row h-14 items-center\">
+<a href=\"/createRestaurant\" hx-target=\"#inner-body\" class=\"
+\">create restaurant</a><p>
 </p>
 <button hx-get=\"/logout\" class=\"
 \">logout</button></div>

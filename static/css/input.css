@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-  @font-face {
-    font-family: "Kelsi";
-    font-style: normal;
-    font-display: block;
-    font-weight: normal;
-    src: url("../../static/fonts/Kelsi-Regular.otf") format("otf");
-  }
+  /*@font-face {*/
+  /*  font-family: "Kelsi";*/
+  /*  font-style: normal;*/
+  /*  font-display: block;*/
+  /*  font-weight: normal;*/
+  /*  src: url("../../static/fonts/Kelsi-Regular.otf") format("otf");*/
+  /*}*/
   /*@font-face {*/
   /*  font-family: "Kelsi";*/
   /*  font-style: filled;*/

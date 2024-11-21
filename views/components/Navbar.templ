@@ -18,6 +18,7 @@ templ Navbar(account *db.User) {
 			</div>
 		} else {
 			<div class="flex flex-row h-14 items-center">
+				<a href="/createRestaurant" hx-target="#inner-body" class={ navbarClass + " mr-5" }>create restaurant</a>
 				<p>{ account.Username }</p>
 				<button hx-get="/logout" class={ navbarClass }>logout</button>
 			</div>

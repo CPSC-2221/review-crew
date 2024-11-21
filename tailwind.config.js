@@ -12,9 +12,9 @@ module.exports = {
       tertiaryhover: "var(--color-tertiary-hover)",
       tertiaryclick: "var(--color-tertiary-click)",
     },
-    fontFamily: {
-      display: ["Kelsi"],
-    },
+    //fontFamily: {
+    //  display: ["Kelsi"],
+    //},
     extend: {},
   },
   plugins: [],

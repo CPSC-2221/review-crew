@@ -4,6 +4,7 @@ import "server-api/db"
 import "github.com/gin-gonic/gin"
 import "log"
 import "strconv"
+import "slices"
 
 func getRestaurantReviews(locationID int32) []db.Review {
 	reviews, err := db.GetRestaurantReviews(&gin.Context{}, locationID)
@@ -13,18 +14,13 @@ func getRestaurantReviews(locationID int32) []db.Review {
 	return reviews
 }
 
-func getSubReviews(reviewID int32) (reviews []db.Review) {
+func getSubReviews(reviewID int32) []db.Review {
 	ctx := &gin.Context{}
 	replies, err := db.GetRepliesToAReview(ctx, reviewID)
 	if err != nil {
 		log.Printf("Error while retrieving restaurant reviews: %s", err.Error())
 	}
-	reviews = make([]db.Review, len(replies))
-	for _, r := range replies {
-		review, _ := db.GetReview(r.RepliesToReviewID, ctx)
-		reviews = append(reviews, *review)
-	}
-	return
+	return replies
 }
 
 func getUsername(email string) string {
@@ -32,16 +28,63 @@ func getUsername(email string) string {
 	return usr.Username
 }
 
+func getReviewLikes(locationID int32, reviewID int32) int {
+	likes, _ := db.GetReviewLikesCountLocation(&gin.Context{}, locationID)
+	for _, l := range likes {
+		if l.ReviewID == reviewID {
+			return l.Likes
+		}
+	}
+	return 0
+}
+
+func userHasLikedReview(reviewID int32, email string, restaurantID int32) bool {
+	userLikedReviews, _ := db.GetUserLikedReviewIDsByLocation(&gin.Context{}, email, restaurantID)
+	for _, i := range userLikedReviews {
+		if i == reviewID {
+			return true
+		}
+	}
+	return false
+}
+
+func getReplyCount(reviewID int32) int {
+	return db.CountRepliesToReview(&gin.Context{}, reviewID)
+}
+
+func getCanEdit(email string, restaurantID int32) bool {
+	list := db.GetUsersThatCanEditDesciption(restaurantID, &gin.Context{})
+	return slices.Contains(list, email)
+}
+
+func getCanDelete(email string, restaurantID int32) bool {
+	list := db.GetUsersThatCanDeleteReviews(restaurantID, &gin.Context{})
+	return slices.Contains(list, email)
+}
+
+func str[T int | int32](in T) string {
+	return strconv.FormatInt(int64(in), 10)
+}
+
 templ Location(location *db.Restaurant, account *db.User) {
 	<div class="text-8xl text-primary font-semibold mb-2 font-display self-start">{ location.Name }</div>
 	<div class="self-start border-tertiary border-2 text-tertiary font-bold p-1 rounded-lg mb-6">{ location.Location }</div>
-	<div class="self-start text-lg min-h-[30vh] text-secondary">{ location.Description }</div>
+	<div class="w-full">
+		if account != nil && getCanEdit(account.Email, location.ID) {
+			<form>
+				<textarea class="self-start text-lg min-h-[30vh] text-secondary w-full bg-background border-2 border-tertiary rounded-lg p-3" name="description">{ location.Description }</textarea>
+				<button hx-post="/updatedescription" hx-vals={ "{\"id\": \"" + strconv.FormatInt(int64(location.ID), 10) + "\"}" } hx-swap="none" class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary w-full mt-2 mb-6">Submit Edit</button>
+			</form>
+		} else {
+			<div class="self-start text-lg min-h-[30vh] text-secondary">{ location.Description }</div>
+		}
+	</div>
 	<div class="gap-5 self-start w-full flex flex-col">
 		if account != nil {
 			@reviewTextBox(location, account)
 		}
 		for _, r := range getRestaurantReviews(location.ID) {
-			@review(r, account)
+			@review(location, r, account)
 		}
 	</div>
 }
@@ -55,8 +98,8 @@ templ reviewTextBox(location *db.Restaurant, account *db.User) {
 	</form>
 }
 
-templ review(review db.Review, account *db.User) {
-	<div class="w-full flex flex-col gap-1">
+templ review(location *db.Restaurant, review db.Review, account *db.User) {
+	<div class="w-full flex flex-col gap-1" id={ "review-" + str(review.ID) }>
 		<div class="p-3 border-tertiary rounded-lg border-4 w-full">
 			<div class="w-full flex justify-between">
 				<div>
@@ -68,16 +111,46 @@ templ review(review db.Review, account *db.User) {
 						{ review.Datetime.String() }
 					</span>
 				</div>
-				if account != nil {
-					<button class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Reply</button>
-				}
+				<div class="flex flex-row gap-2">
+					if account != nil {
+						if getCanDelete(account.Email, location.ID) {
+							<form>
+								<input type="hidden" name="reviewID" value={ str(review.ID) }/>
+								<button type="button" hx-post="/deletereview" hx-target={ "#review-" + str(review.ID) } hx-swap="delete" class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Delete</button>
+							</form>
+						}
+						<form>
+							<input type="hidden" name="locationID" value={ str(location.ID) }/>
+							<input type="hidden" name="reviewID" value={ str(review.ID) }/>
+							<button type="button" hx-post="/openreply" hx-target={ "#reply-input-" + str(review.ID) } class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Reply</button>
+						</form>
+					}
+				</div>
 			</div>
 			<div class="text-secondary">{ review.Comment }</div>
+			<div class="flex flex-row gap-5">
+				<span class="text-tertiary">Replies { strconv.FormatInt(int64(getReplyCount(review.ID)), 10) }</span>
+				<span class="text-primary">
+					@LikesTemplate(location.ID, review.ID)
+				</span>
+				if account != nil {
+					if userHasLikedReview(review.ID, account.Email, int32(review.RestaurantID)) {
+						<button hx-post="/deletelike" name="reviewID" value={ strconv.FormatInt(int64(review.ID), 10) } class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Unlike</button>
+					} else {
+						<button hx-post="/createlike" hx-swap="none" name="reviewID" value={ strconv.FormatInt(int64(review.ID), 10) } class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Like</button>
+					}
+				}
+			</div>
 		</div>
-		// for _, r := range getSubReviews(review.ID) {
-		//	@reply(r)
-		// }
+		<div class="flex flex-row w-full" id={ "reply-input-" + str(review.ID) }></div>
+		for _, r := range getSubReviews(review.ID) {
+			@reply(r)
+		}
 	</div>
+}
+
+templ LikesTemplate(locationID int32, reviewID int32) {
+	Likes { strconv.FormatInt(int64(getReviewLikes(locationID, reviewID)), 10) }
 }
 
 templ reply(review db.Review) {
@@ -88,7 +161,7 @@ templ reply(review db.Review) {
 		</div>
 		<div class="flex flex-col gap-1 p-3 border-tertiary rounded-lg border-4 w-full">
 			<div class="w-full">
-				<span class="font-bold">
+				<span class="font-bold text-secondary">
 					{ getUsername(review.Email) }
 				</span>
 				- 
@@ -96,7 +169,21 @@ templ reply(review db.Review) {
 					{ review.Datetime.String() }
 				</span>
 			</div>
-			<div>{ review.Comment }</div>
+			<div class="text-secondary">{ review.Comment }</div>
 		</div>
 	</div>
+}
+
+templ ReplyInput(email string, locationID string, reviewID string) {
+	<div class="w-16">
+		<div class="w-1/2 border-r-4 h-full border-tertiary"></div>
+		<div class="w-1/2"></div>
+	</div>
+	<form class="w-full">
+		<textarea name="comment" maxlength="250" class="resize-y w-full h-10 border-2 border-tertiary rounded-lg p-2 opacity-80"></textarea>
+		<input type="hidden" name="email" value={ email }/>
+		<input type="hidden" name="restaurantID" value={ locationID }/>
+		<input type="hidden" name="reviewID" value={ reviewID }/>
+		<button hx-post="/createreply" type="button" class="mt-1 mb-4 font-semibold border-4 border-tertiary rounded-lg py-1.5 bg-background text-tertiary text-sm hover:bg-secondary hover:text-tertiary w-full">Create Reply</button>
+	</form>
 }

@@ -9,7 +9,6 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import "server-api/db"
-import "fmt"
 import "strings"
 
 func Home(restaurants []db.Restaurant) templ.Component {
@@ -109,7 +108,7 @@ func location(restaurant db.Restaurant) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 templ.SafeURL = templ.URL(fmt.Sprintf("/location/%b", restaurant.ID))
+		var templ_7745c5c3_Var4 templ.SafeURL = templ.URL("/location/" + str(restaurant.ID))
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var4)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -121,7 +120,7 @@ func location(restaurant db.Restaurant) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(restaurant.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Home.templ`, Line: 22, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Home.templ`, Line: 21, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -134,7 +133,7 @@ func location(restaurant db.Restaurant) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Split(restaurant.Description, ".")[0] + ".")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Home.templ`, Line: 24, Col: 112}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/Home.templ`, Line: 23, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {

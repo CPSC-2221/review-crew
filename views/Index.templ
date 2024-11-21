@@ -9,7 +9,7 @@ templ Index(inside templ.Component, account *db.User) {
 		@header()
 		<body class="bg-background h-screen">
 			@components.Navbar(account)
-			<div id="inner-body" class="h-fit w-[46rem] mx-auto mt-10 flex flex-col items-center">
+			<div id="inner-body" class="h-fit w-[46rem] max-w-[90%] mx-auto mt-10 flex flex-col items-center">
 				@inside
 			</div>
 		</body>

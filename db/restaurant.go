@@ -69,3 +69,7 @@ func UpdateRestaurant(replaceWith *Restaurant, id int32, c *gin.Context) (*Resta
 	}
 	return &new_restaurant, nil
 }
+
+func UpdateDescription(replaceWith string, id int32, c *gin.Context) {
+	dbpool.QueryRow(c, "UPDATE restaurants SET description=$1 where restaurantID=$2;", replaceWith, id)
+}

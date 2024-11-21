@@ -16,6 +16,8 @@ func InitRouter() *gin.Engine {
 	r.GET("/signup", signUp)
 	r.GET("/login", logIn)
 	r.GET("/logout", logout)
+	r.POST("/openreply", openReply)
+	r.GET("/createRestaurant", gotoCreateRestaurant)
 
 	r.POST("/user", postUser)
 	r.GET("/user/:email", getUser)
@@ -41,6 +43,8 @@ func InitRouter() *gin.Engine {
 	r.PUT("/restaurant/:id", putRestaurant)
 	r.DELETE("/restaurant/:id", deleteRestaurant)
 	r.POST("/create-restaurant-table", db.CreateRestaurantTable)
+	r.POST("/updatedescription", putDescription)
+	r.POST("/createRestaurant", createRestaurant)
 
 	r.POST("/review", postReview)
 	r.GET("/review/:id", getReview)
@@ -48,6 +52,8 @@ func InitRouter() *gin.Engine {
 	r.DELETE("/review/:id", deleteReview)
 	r.POST("/create-review-table", db.CreateReviewTable)
 	r.POST("/createreview", createReview)
+	r.POST("/createreply", createReply)
+	r.POST("/deletereview", removeReview)
 
 	r.POST("/replies-to", postRepliesTo)
 	r.DELETE("/replies-to/:repliedTo/:repliesTo", deleteRepliesTo)
@@ -63,6 +69,8 @@ func InitRouter() *gin.Engine {
 	r.GET("/like/:reviewID", getReviewLikes)
 	r.DELETE("/like/:email/:reviewID", deleteLike)
 	r.POST("/create-likes-table", db.CreateLikesTable)
+	r.POST("/createlike", createLike)
+	r.POST("/deletelike", removeLike)
 
 	r.POST("/has-burger-emoji", postHasBurgerEmoji)
 	r.GET("/has-burger-emoji/:username", getHasBurgerEmoji)

@@ -1,7 +1,6 @@
 package views
 
 import "server-api/db"
-import "fmt"
 import "strings"
 
 templ Home(restaurants []db.Restaurant) {
@@ -18,7 +17,7 @@ templ locations(restaurants []db.Restaurant) {
 }
 
 templ location(restaurant db.Restaurant) {
-	<a hx-boost="true" href={ templ.URL(fmt.Sprintf("/location/%b", restaurant.ID)) } hx-target="#inner-body" class="rounded-lg w-full bg-tertiary text-secondary hover:bg-secondary hover:text-tertiary active:bg-[#000000] flex flex-row font-sans cursor-pointer">
+	<a hx-boost="true" href={ templ.URL("/location/" + str(restaurant.ID)) } hx-target="#inner-body" class="rounded-lg w-full bg-tertiary text-secondary hover:bg-secondary hover:text-tertiary active:bg-[#000000] flex flex-row font-sans cursor-pointer">
 		<div class="px-6 min-w-1/5 font-black text-xl py-10">{ restaurant.Name }</div>
 		<div class="w-0 rounded-full border-2 my-5 border-primary"></div>
 		<div class="px-4 w-4/5 flex-initial py-10 font-semibold">{ strings.Split(restaurant.Description, ".")[0] + "." }</div>

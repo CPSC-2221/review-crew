@@ -89,9 +89,31 @@ func GetRestaurantReviews(c *gin.Context, restaurantID int32) ([]Review, error) 
 	return reviews, nil
 }
 
+func GetRepliesToAReview(c *gin.Context, reviewID int32) ([]Review, error) {
+	rows, err := dbpool.Query(c, "SELECT * FROM review WHERE reviewID IN (SELECT repliesToReviewID FROM repliesTo WHERE isRepliedToReviewID = $1);", reviewID)
+	if err != nil {
+		return nil, err
+	}
+
+	var replies []Review
+	for rows.Next() {
+		var reply Review
+		err := rows.Scan(&reply.ID, &reply.Email, &reply.RestaurantID, &reply.Comment, &reply.Datetime)
+		if err != nil {
+			return nil, err
+		}
+		replies = append(replies, reply)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return replies, nil
+}
+
 func DeleteReview(id int32, c *gin.Context) (*Review, error) {
 	var deleted_review Review
-	row := dbpool.QueryRow(c, "DELETE FROM review WHERE id = $1 RETURNING *;", id)
+	row := dbpool.QueryRow(c, "DELETE FROM review WHERE reviewID = $1 RETURNING *;", id)
 	err := row.Scan(&deleted_review.ID, &deleted_review.Email, &deleted_review.RestaurantID, &deleted_review.Comment, &deleted_review.Datetime)
 	if err != nil {
 		return nil, err

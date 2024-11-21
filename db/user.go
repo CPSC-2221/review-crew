@@ -12,7 +12,7 @@ type User struct {
 func CreateUser(user User, c *gin.Context) (*User, error) {
 	var new_user User
 	row := dbpool.QueryRow(c, "INSERT INTO users(username, email) VALUES ($1, $2) RETURNING *;", user.Username, user.Email)
-	err := row.Scan(&new_user.Username, &new_user.Email)
+	err := row.Scan(&new_user.Email, &new_user.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func GetUsers(c *gin.Context) ([]User, error) {
 func DeleteUser(email string, c *gin.Context) (*User, error) {
 	var deleted_user User
 	row := dbpool.QueryRow(c, "DELETE FROM users WHERE email = $1 RETURNING *;", email)
-	err := row.Scan(&deleted_user.Username, &deleted_user.Email)
+	err := row.Scan(&deleted_user.Email, &deleted_user.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func DeleteUser(email string, c *gin.Context) (*User, error) {
 func UpdateUser(replaceWith User, oldEmail string, c *gin.Context) (*User, error) {
 	var new_user User
 	row := dbpool.QueryRow(c, "UPDATE users SET username=$1, email=$2 where email=$3 RETURNING *;", replaceWith.Username, replaceWith.Email, oldEmail)
-	err := row.Scan(&new_user.Username, &new_user.Email)
+	err := row.Scan(&new_user.Email, &new_user.Username)
 	if err != nil {
 		return nil, err
 	}

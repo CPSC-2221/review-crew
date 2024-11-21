@@ -24,31 +24,14 @@ func CreateRepliesTo(c *gin.Context, repliesTo RepliesTo) (*RepliesTo, error) {
 	return &new_repliesTo, nil
 }
 
-func GetRepliesToAReview(c *gin.Context, reviewID int32) ([]RepliesTo, error) {
-	rows, err := dbpool.Query(c, "SELECT * FROM repliesTo WHERE isRepliedToReviewID = $1;", reviewID)
+func CountRepliesToReview(c *gin.Context, reviewID int32) int {
+	row := dbpool.QueryRow(c, "SELECT Count(*) FROM repliesTo WHERE isRepliedToReviewID = $1;", reviewID)
+	var count int
+	err := row.Scan(&count)
 	if err != nil {
-		return nil, err
+		return 0
 	}
-
-	var replies []RepliesTo
-	for rows.Next() {
-		var reply RepliesTo
-		rows.Scan(&reply.RepliesToReviewID, &reply.IsRepliedToReviewID)
-		replies = append(replies, reply)
-	}
-	err = rows.Err()
-	if err != nil {
-		return nil, err
-	}
-	return replies, nil
-}
-
-func IsReplyingToAReview(c *gin.Context, reviewID int32) bool {
-	row := dbpool.QueryRow(c, "SELECT * FROM repliesTo WHERE repliesToReviewID = $1;", reviewID)
-	if row == nil {
-		return false
-	}
-	return true
+	return count
 }
 
 func DeleteRepliesTo(c *gin.Context, replyToReviewID int32, isRepliedToReviewID int32) (*RepliesTo, error) {
