@@ -68,15 +68,20 @@ func GetReviews(c *gin.Context) ([]Review, error) {
 	return reviews, nil
 }
 
-func GetRestaurantReviews(c *gin.Context, restaurantID int32) ([]Review, error) {
-	rows, err := dbpool.Query(c, "SELECT * FROM review where restaurantID = $1 AND reviewID NOT IN (SELECT repliesToReviewID FROM repliesTo);", restaurantID)
+type NamedReview struct {
+	Review
+	Username string
+}
+
+func GetRestaurantReviews(c *gin.Context, restaurantID int32) ([]NamedReview, error) {
+	rows, err := dbpool.Query(c, "SELECT reviewID, r.email, restaurantID, comment, datetime, username FROM review r, users u where restaurantID = $1 AND reviewID NOT IN (SELECT repliesToReviewID FROM repliesTo) AND u.email = r.email;", restaurantID)
 	if err != nil {
 		return nil, err
 	}
-	var reviews []Review
+	var reviews []NamedReview
 	for rows.Next() {
-		var review Review
-		err := rows.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime)
+		var review NamedReview
+		err := rows.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime, &review.Username)
 		if err != nil {
 			return nil, err
 		}
@@ -89,26 +94,26 @@ func GetRestaurantReviews(c *gin.Context, restaurantID int32) ([]Review, error) 
 	return reviews, nil
 }
 
-func GetRepliesToAReview(c *gin.Context, reviewID int32) ([]Review, error) {
-	rows, err := dbpool.Query(c, "SELECT * FROM review WHERE reviewID IN (SELECT repliesToReviewID FROM repliesTo WHERE isRepliedToReviewID = $1);", reviewID)
+func GetRepliesToAReview(c *gin.Context, reviewID int32) ([]NamedReview, error) {
+	rows, err := dbpool.Query(c, "SELECT reviewID, r.email, restaurantID, comment, datetime, username FROM review r, users u WHERE reviewID IN (SELECT repliesToReviewID FROM repliesTo WHERE isRepliedToReviewID = $1) AND r.email = u.email;", reviewID)
 	if err != nil {
 		return nil, err
 	}
 
-	var replies []Review
+	var reviews []NamedReview
 	for rows.Next() {
-		var reply Review
-		err := rows.Scan(&reply.ID, &reply.Email, &reply.RestaurantID, &reply.Comment, &reply.Datetime)
+		var review NamedReview
+		err := rows.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime, &review.Username)
 		if err != nil {
 			return nil, err
 		}
-		replies = append(replies, reply)
+		reviews = append(reviews, review)
 	}
 	err = rows.Err()
 	if err != nil {
 		return nil, err
 	}
-	return replies, nil
+	return reviews, nil
 }
 
 func DeleteReview(id int32, c *gin.Context) (*Review, error) {

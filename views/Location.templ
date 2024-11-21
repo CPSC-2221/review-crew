@@ -6,7 +6,7 @@ import "log"
 import "strconv"
 import "slices"
 
-func getRestaurantReviews(locationID int32) []db.Review {
+func getRestaurantReviews(locationID int32) []db.NamedReview {
 	reviews, err := db.GetRestaurantReviews(&gin.Context{}, locationID)
 	if err != nil {
 		log.Printf("Error while retrieving restaurant reviews: %s", err.Error())
@@ -14,18 +14,13 @@ func getRestaurantReviews(locationID int32) []db.Review {
 	return reviews
 }
 
-func getSubReviews(reviewID int32) []db.Review {
+func getSubReviews(reviewID int32) []db.NamedReview {
 	ctx := &gin.Context{}
 	replies, err := db.GetRepliesToAReview(ctx, reviewID)
 	if err != nil {
 		log.Printf("Error while retrieving restaurant reviews: %s", err.Error())
 	}
 	return replies
-}
-
-func getUsername(email string) string {
-	usr, _ := db.GetUser(email, &gin.Context{})
-	return usr.Username
 }
 
 func getReviewLikes(locationID int32, reviewID int32) int {
@@ -98,13 +93,13 @@ templ reviewTextBox(location *db.Restaurant, account *db.User) {
 	</form>
 }
 
-templ review(location *db.Restaurant, review db.Review, account *db.User) {
+templ review(location *db.Restaurant, review db.NamedReview, account *db.User) {
 	<div class="w-full flex flex-col gap-1" id={ "review-" + str(review.ID) }>
 		<div class="p-3 border-tertiary rounded-lg border-4 w-full">
 			<div class="w-full flex justify-between">
 				<div>
 					<span class="font-bold text-secondary">
-						{ getUsername(review.Email) }
+						{ review.Username }
 					</span>
 					- 
 					<span class="text-[#777777]">
@@ -153,7 +148,7 @@ templ LikesTemplate(locationID int32, reviewID int32) {
 	Likes { strconv.FormatInt(int64(getReviewLikes(locationID, reviewID)), 10) }
 }
 
-templ reply(review db.Review) {
+templ reply(review db.NamedReview) {
 	<div class="flex flex-row w-full">
 		<div class="w-16">
 			<div class="w-1/2 border-r-4 h-full border-tertiary"></div>
@@ -162,7 +157,7 @@ templ reply(review db.Review) {
 		<div class="flex flex-col gap-1 p-3 border-tertiary rounded-lg border-4 w-full">
 			<div class="w-full">
 				<span class="font-bold text-secondary">
-					{ getUsername(review.Email) }
+					{ review.Username }
 				</span>
 				- 
 				<span class="text-[#777777]">

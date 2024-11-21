@@ -143,9 +143,19 @@ func removeReview(ctx *gin.Context) {
 	}
 	id := int32(id_32)
 
+	var replies []db.NamedReview
+	replies, _ = db.GetRepliesToAReview(ctx, id)
+	for _, r := range replies {
+		_, err = db.DeleteReview(r.ID, ctx)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+	}
 	_, err = db.DeleteReview(id, ctx)
 	if err != nil {
-		panic(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
