@@ -29,25 +29,6 @@ func GetOwn(email string, restaurantID int32, c *gin.Context) (*Own, error) {
 	return &own, nil
 }
 
-func GetUserOwnedRestaurants(email string, c *gin.Context) []int32 {
-	rows, err := dbpool.Query(c, "SELECT restaurantID FROM owns WHERE email = $1;", email)
-	if err != nil {
-		return nil
-	}
-
-	var owns []int32
-	for rows.Next() {
-		var own int32
-		rows.Scan(&own)
-		owns = append(owns, own)
-	}
-	err = rows.Err()
-	if err != nil {
-		return nil
-	}
-	return owns
-}
-
 func GetUsersThatCanEditDesciption(restaurantID int32, c *gin.Context) ([]string, error) {
 	rows, err := dbpool.Query(c, "SELECT email FROM owns WHERE restaurantID = $1 UNION SELECT email from manages WHERE restaurantID = $1 AND canUpdateListing;", restaurantID)
 	if err != nil {
@@ -103,6 +84,16 @@ func GetOwns(c *gin.Context) ([]Own, error) {
 		return nil, err
 	}
 	return owns, nil
+}
+
+func IsUserOwner(email string, c *gin.Context) bool {
+	row := dbpool.QueryRow(c, "SELECT COUNT(*) FROM owns WHERE email = $1;", email)
+	var ret int
+	err := row.Scan(&ret)
+	if err != nil {
+		return false
+	}
+	return ret > 0
 }
 
 func DeleteOwn(email string, restaurantID int32, c *gin.Context) (*Own, error) {

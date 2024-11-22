@@ -47,6 +47,15 @@ func getReplyCount(reviewID int32) int {
 	return db.CountRepliesToReview(&gin.Context{}, reviewID)
 }
 
+func getReviewCount(resaurantID int32) string {
+	count := db.CountReviewsOnRestaurant(&gin.Context{}, resaurantID)
+	ret := str(count) + " Review"
+	if count != 1 {
+		ret += "s"
+	}
+	return ret
+}
+
 func getCanEdit(email string, restaurantID int32) bool {
 	list, _ := db.GetUsersThatCanEditDesciption(restaurantID, &gin.Context{})
 	return slices.Contains(list, email)
@@ -67,13 +76,18 @@ templ Location(location *db.Restaurant, account *db.User) {
 	<div class="w-full">
 		if account != nil && getCanEdit(account.Email, location.ID) {
 			<form>
-				<textarea class="self-start text-lg min-h-[30vh] text-secondary w-full bg-background border-2 border-tertiary rounded-lg p-3" name="description">{ location.Description }</textarea>
-				<button hx-post="/updatedescription" hx-vals={ "{\"id\": \"" + strconv.FormatInt(int64(location.ID), 10) + "\"}" } hx-swap="none" class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary w-full mt-2 mb-6">Submit Edit</button>
+				<textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' class="self-start text-lg min-h-[30vh] text-secondary w-full bg-background border-2 border-tertiary rounded-lg p-3" name="description">{ location.Description }</textarea>
+				<button hx-post="/updatedescription" hx-vals={ "{\"id\": \"" + strconv.FormatInt(int64(location.ID), 10) + "\"}" } hx-swap="none" class="py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary w-full mt-2 mb-6">Save Description</button>
 			</form>
 		} else {
 			<div class="self-start text-lg min-h-[30vh] text-secondary">{ location.Description }</div>
 		}
 	</div>
+	<div class="text-tertiary text-xl font-semibold self-start">{ getReviewCount(int32(location.ID)) }</div>
+	<hr class="border-2 border-tertiary w-full mb-4"/>
+	if account == nil {
+		<div class="text-tertiary mb-4">log in to leave a review</div>
+	}
 	<div class="gap-5 self-start w-full flex flex-col">
 		if account != nil {
 			@reviewTextBox(location, account)
@@ -86,7 +100,7 @@ templ Location(location *db.Restaurant, account *db.User) {
 
 templ reviewTextBox(location *db.Restaurant, account *db.User) {
 	<form>
-		<textarea name="comment" maxlength="250" class="resize-y w-full h-20 border-2 border-tertiary rounded-lg p-2"></textarea>
+		<textarea oninput='this.style.height = this.scrollHeight + "px"' name="comment" maxlength="250" class="resize-y w-full min-h-20 border-2 border-tertiary rounded-lg p-2"></textarea>
 		<input type="hidden" name="email" value={ account.Email }/>
 		<input type="hidden" name="restaurantID" value={ strconv.FormatInt(int64(location.ID), 10) }/>
 		<button hx-post="/createreview" type="button" class="mt-4 font-semibold border-lg rounded-lg py-1.5 bg-tertiary text-secondary hover:bg-secondary hover:text-tertiary w-full">Create Review</button>
@@ -175,7 +189,7 @@ templ ReplyInput(email string, locationID string, reviewID string) {
 		<div class="w-1/2"></div>
 	</div>
 	<form class="w-full">
-		<textarea name="comment" maxlength="250" class="resize-y w-full h-10 border-2 border-tertiary rounded-lg p-2 opacity-80"></textarea>
+		<textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' name="comment" maxlength="250" class="resize-y w-full h-10 border-2 border-tertiary rounded-lg p-2 opacity-80"></textarea>
 		<input type="hidden" name="email" value={ email }/>
 		<input type="hidden" name="restaurantID" value={ locationID }/>
 		<input type="hidden" name="reviewID" value={ reviewID }/>

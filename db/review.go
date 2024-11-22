@@ -116,6 +116,16 @@ func GetRepliesToAReview(c *gin.Context, reviewID int32) ([]NamedReview, error) 
 	return reviews, nil
 }
 
+func CountReviewsOnRestaurant(c *gin.Context, restaurantID int32) int {
+	row := dbpool.QueryRow(c, "SELECT Count(*) FROM review WHERE restaurantID = $1 AND reviewID NOT IN (SELECT repliesToReviewID FROM repliesTo);", restaurantID)
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		return 0
+	}
+	return count
+}
+
 func DeleteReview(id int32, c *gin.Context) (*Review, error) {
 	var deleted_review Review
 	row := dbpool.QueryRow(c, "DELETE FROM review WHERE reviewID = $1 RETURNING *;", id)

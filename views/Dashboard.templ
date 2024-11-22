@@ -1,0 +1,77 @@
+package views
+
+import "server-api/db"
+import "github.com/gin-gonic/gin"
+
+func getOwnedRestaurants(email string) []db.Restaurant {
+	return db.GetUserOwnedRestaurants(email, &gin.Context{})
+}
+
+func getRestaurantManagers(restaurantID int32) []db.Manager {
+	return db.GetRestaurantManagers(restaurantID, &gin.Context{})
+}
+
+func boolToValue(value bool) string {
+	if value {
+		return "checked"
+	}
+	return "unchecked"
+}
+
+templ OwnerDashboard(account *db.User) {
+	<div class="text-6xl text-primary font-semibold font-display">OWNER DASHBOARD</div>
+	<div class="flex flex-col gap-y-6 mt-10 w-full">
+		for _, r := range getOwnedRestaurants(account.Email) {
+			@restaurantBoard(r)
+		}
+	</div>
+}
+
+templ restaurantBoard(location db.Restaurant) {
+	<div class="flex flex-col w-full gap-x-3 bg-[#E0D9C1] p-2 rounded-lg">
+		<div>{ location.Name }</div>
+		<hr class="border-2 border-tertiary w-full mb-4"/>
+		<div class="grow flex flex-col gap-3">
+			<form class="w-full grid grid-cols-4 grid-rows-2 grid-flow-col justify-items-center border-tertiary border-2 rounded-lg p-2">
+				<label for="username">Username</label>
+				<input name="username" type="text" class="block w-full rounded-md py-1.5 text-gray-900 px-1.5"/>
+				<label for="canUpdateListing">Can Update Listing</label>
+				<input name="canUpdateListing" type="checkbox"/>
+				<label for="canDeleteComments">Can Delete Comments</label>
+				<input name="canDeleteComments" type="checkbox"/>
+				<input name="restaurantID" type="hidden" value={ str(location.ID) }/>
+				<button type="button" hx-post="/addmanager" class="row-span-2 h-fit w-5/6 self-center py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Add Manager</button>
+			</form>
+			for _, m := range getRestaurantManagers(location.ID) {
+				@managerRow(m, location)
+			}
+		</div>
+	</div>
+}
+
+templ managerRow(manager db.Manager, location db.Restaurant) {
+	<div class="w-full flex flex-col justify-around">
+		<div>
+			<form class="w-full grid grid-cols-4 grid-rows-2 grid-flow-col justify-items-center border-tertiary border-2 rounded-lg p-2">
+				<label for="username">Username</label>
+				<input disabled value={ manager.Username } name="username" type="text" class="block w-full rounded-md py-1.5 text-gray-900 px-1.5"/>
+				<label for="canUpdateListing">Can Update Listing</label>
+				if manager.CanUpdateListing {
+					<input name="canUpdateListing" checked type="checkbox"/>
+				} else {
+					<input name="canUpdateListing" type="checkbox"/>
+				}
+				<label for="canDeleteComments">Can Delete Comments</label>
+				if manager.CanDeleteComments {
+					<input name="canDeleteComments" checked type="checkbox"/>
+				} else {
+					<input name="canDeleteComments" type="checkbox"/>
+				}
+				<input name="restaurantID" type="hidden" value={ str(location.ID) }/>
+				<input name="email" type="hidden" value={ manager.Email }/>
+				<button type="button" hx-post="/deletemanager" class="h-fit w-5/6 self-center py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Remove Manager</button>
+				<button type="button" hx-post="/updatemanager" class="h-fit w-5/6 self-center py-1 px-2 bg-tertiary font-semibold text-secondary rounded-lg hover:bg-secondary hover:text-tertiary">Update Manager</button>
+			</form>
+		</div>
+	</div>
+}

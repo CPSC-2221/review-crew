@@ -29,6 +29,13 @@ func GetUser(email string, c *gin.Context) (*User, error) {
 	return &user, nil
 }
 
+func GetEmailFromUsername(username string, c *gin.Context) string {
+	var email string
+	row := dbpool.QueryRow(c, "SELECT email FROM users WHERE username = $1;", username)
+	row.Scan(&email)
+	return email
+}
+
 func GetUsers(c *gin.Context) ([]User, error) {
 	rows, err := dbpool.Query(c, "SELECT * FROM users;")
 	if err != nil {

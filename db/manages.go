@@ -11,14 +11,8 @@ type Manages struct {
 	CanUpdateListing  bool   `json:"canUpdateListing"`
 }
 
-func CreateManages(manages Manages, c *gin.Context) (*Manages, error) {
-	var new_manages Manages
-	row := dbpool.QueryRow(c, "INSERT INTO manages(email,restaurantID,canDeleteComments,canUpdateListing) VALUES ($1,$2,$3,$4) RETURNING *;", manages.Email, manages.RestaurantID, manages.CanDeleteComments, manages.CanUpdateListing)
-	err := row.Scan(&new_manages.Email, &new_manages.RestaurantID, &new_manages.CanDeleteComments, &new_manages.CanUpdateListing)
-	if err != nil {
-		return nil, err
-	}
-	return &new_manages, nil
+func CreateManages(manages Manages, c *gin.Context) {
+	dbpool.QueryRow(c, "INSERT INTO manages(email,restaurantID,canDeleteComments,canUpdateListing) VALUES ($1,$2,$3,$4);", manages.Email, manages.RestaurantID, manages.CanDeleteComments, manages.CanUpdateListing)
 }
 
 func GetManages(email string, restaurantID int32, c *gin.Context) (*Manages, error) {
@@ -31,14 +25,40 @@ func GetManages(email string, restaurantID int32, c *gin.Context) (*Manages, err
 	return &manages, nil
 }
 
-func DeleteManages(email string, restaurantID int32, c *gin.Context) (*Manages, error) {
-	var deleted_manages Manages
-	row := dbpool.QueryRow(c, "DELETE FROM manages WHERE email = $1 AND restaurantID = $2 RETURNING *;", email, restaurantID)
-	err := row.Scan(&deleted_manages.Email, &deleted_manages.RestaurantID, &deleted_manages.CanDeleteComments, &deleted_manages.CanUpdateListing)
+type Manager struct {
+	Username          string
+	Email             string
+	CanDeleteComments bool
+	CanUpdateListing  bool
+}
+
+func GetRestaurantManagers(restaurantID int32, c *gin.Context) []Manager {
+	rows, err := dbpool.Query(c, "SELECT u.Username, m.email, m.CanDeleteComments, m.CanUpdateListing FROM users u, manages m WHERE u.email = m.email AND m.restaurantID = $1;", restaurantID)
 	if err != nil {
-		return nil, err
+		panic(err)
+		return nil
 	}
-	return &deleted_manages, nil
+
+	var managers []Manager
+	for rows.Next() {
+		var manager Manager
+		err := rows.Scan(&manager.Username, &manager.Email, &manager.CanDeleteComments, &manager.CanUpdateListing)
+		if err != nil {
+			panic(err)
+			return nil
+		}
+		managers = append(managers, manager)
+	}
+	err = rows.Err()
+	if err != nil {
+		panic(err)
+		return nil
+	}
+	return managers
+}
+
+func DeleteManages(email string, restaurantID int32, c *gin.Context) {
+	dbpool.QueryRow(c, "DELETE FROM manages WHERE email = $1 AND restaurantID = $2;", email, restaurantID)
 }
 
 func UpdateManages(manages Manages, c *gin.Context) (*Manages, error) {

@@ -8,28 +8,48 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func postManages(ctx *gin.Context) {
+func addManager(ctx *gin.Context) {
 	var manages db.Manages
 
-	err := ctx.Bind(&manages)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+	r_id, _ := strconv.ParseInt(ctx.PostForm("restaurantID"), 10, 32)
+	manages.RestaurantID = int32(r_id)
+
+	manages.CanUpdateListing = ctx.PostForm("canUpdateListing") == "on"
+
+	manages.CanDeleteComments = ctx.PostForm("canDeleteComments") == "on"
+
+	manages.Email = db.GetEmailFromUsername(ctx.PostForm("username"), ctx)
+
+	email, _ := ctx.Cookie("auth")
+	if manages.Email == email {
 		return
 	}
 
-	res, err := db.CreateManages(manages, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+	db.CreateManages(manages, ctx)
+	ctx.Header("HX-Refresh", "true")
+}
 
-	ctx.JSON(http.StatusCreated, gin.H{
-		"manages": res,
-	})
+func deleteManager(ctx *gin.Context) {
+	restaurantID, _ := strconv.ParseInt(ctx.PostForm("restaurantID"), 10, 32)
+	email := ctx.PostForm("email")
+	db.DeleteManages(email, int32(restaurantID), ctx)
+	ctx.Header("HX-Refresh", "true")
+}
+
+func updateManager(ctx *gin.Context) {
+	var manages db.Manages
+
+	r_id, _ := strconv.ParseInt(ctx.PostForm("restaurantID"), 10, 32)
+	manages.RestaurantID = int32(r_id)
+	manages.CanUpdateListing = ctx.PostForm("canUpdateListing") == "on"
+	manages.CanDeleteComments = ctx.PostForm("canDeleteComments") == "on"
+	manages.Email = ctx.PostForm("email")
+
+	println(manages.RestaurantID)
+	println(manages.Email)
+
+	db.UpdateManages(manages, ctx)
+	ctx.Header("HX-Refresh", "true")
 }
 
 func getManages(ctx *gin.Context) {
@@ -51,63 +71,5 @@ func getManages(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"manages": res,
-	})
-}
-
-func deleteManages(ctx *gin.Context) {
-	email := ctx.Param("email")
-	id_32, err := strconv.ParseInt(ctx.Param("restaurantID"), 10, 32)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	restaurantID := int32(id_32)
-	res, err := db.DeleteManages(email, restaurantID, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_manages": res,
-	})
-}
-
-func putManages(ctx *gin.Context) {
-	var updatedManages db.Manages
-
-	err := ctx.Bind(&updatedManages)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	email := ctx.Param("email")
-	id_32, err := strconv.ParseInt(ctx.Param("restaurantID"), 10, 32)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	restaurantID := int32(id_32)
-	updatedManages.Email = email
-	updatedManages.RestaurantID = restaurantID
-
-	res, err := db.UpdateManages(updatedManages, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_manages": res,
 	})
 }

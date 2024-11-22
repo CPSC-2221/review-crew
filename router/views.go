@@ -58,13 +58,7 @@ func home(ctx *gin.Context) {
 }
 
 func renderUsers(ctx *gin.Context) {
-	res, err := db.GetUsers(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+	res, _ := db.GetUsers(ctx)
 
 	if ctx.GetHeader("HX-Request") == "true" {
 		render.Render(ctx, http.StatusOK, views.Users(res))
@@ -160,4 +154,18 @@ func gotoCreateRestaurant(ctx *gin.Context) {
 
 func renderCreateRestaurant(ctx *gin.Context, errors ...string) {
 	render.Render(ctx, http.StatusOK, views.CreateRestaurant(errors...))
+}
+
+func ownerDashboard(ctx *gin.Context) {
+	usr, _ := getUserFromCookie(ctx)
+	if usr == nil {
+		renderIndex(ctx, usr)
+		return
+	}
+
+	if ctx.GetHeader("HX-Request") == "true" {
+		render.Render(ctx, http.StatusOK, views.OwnerDashboard(usr))
+	} else {
+		render.Render(ctx, http.StatusOK, views.Index(views.OwnerDashboard(usr), usr))
+	}
 }

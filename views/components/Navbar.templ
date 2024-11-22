@@ -1,8 +1,13 @@
 package components
 
 import "server-api/db"
+import "github.com/gin-gonic/gin"
 
 var navbarClass = "px-3 mx-2 bg-tertiary hover:bg-secondary font-bold text-secondary hover:text-tertiary h-11 flex flex-col justify-center content-center rounded-lg cursor-pointer"
+
+func isOwner(email string) bool {
+	return db.IsUserOwner(email, &gin.Context{})
+}
 
 templ Navbar(account *db.User) {
 	<div hx-boost="true" class="px-5 w-full flex flex-row justify-between select-none">
@@ -18,6 +23,9 @@ templ Navbar(account *db.User) {
 			</div>
 		} else {
 			<div class="flex flex-row h-14 items-center">
+				if isOwner(account.Email) {
+					<a href="/ownerDashboard" hx-target="#inner-body" class={ navbarClass }>owner dashboard</a>
+				}
 				<a href="/createRestaurant" hx-target="#inner-body" class={ navbarClass + " mr-5" }>create restaurant</a>
 				<p>{ account.Username }</p>
 				<button hx-get="/logout" class={ navbarClass }>logout</button>

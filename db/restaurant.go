@@ -50,6 +50,25 @@ func GetRestaurants(c *gin.Context) ([]Restaurant, error) {
 	return restaurants, nil
 }
 
+func GetUserOwnedRestaurants(email string, c *gin.Context) []Restaurant {
+	rows, err := dbpool.Query(c, "SELECT * FROM restaurants WHERE restaurantID IN (SELECT restaurantID FROM owns WHERE email = $1);", email)
+	if err != nil {
+		return nil
+	}
+
+	var restaurants []Restaurant
+	for rows.Next() {
+		var restaurant Restaurant
+		rows.Scan(&restaurant.ID, &restaurant.Name, &restaurant.Location, &restaurant.Description)
+		restaurants = append(restaurants, restaurant)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil
+	}
+	return restaurants
+}
+
 func DeleteRestaurant(id int32, c *gin.Context) (*Restaurant, error) {
 	var deleted_restaurant Restaurant
 	row := dbpool.QueryRow(c, "DELETE FROM restaurants WHERE restaurantID = $1 RETURNING *;", id)
