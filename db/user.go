@@ -55,6 +55,29 @@ func GetUsers(c *gin.Context) ([]User, error) {
 	return users, nil
 }
 
+func GetUsersLikedEveryReview(restaurantID int32, c *gin.Context) []User {
+	rows, err := dbpool.Query(c, "SELECT * FROM users u WHERE NOT EXISTS (SELECT r.reviewID FROM review r WHERE r.restaurantID = $1 AND r.reviewID NOT IN (SELECT repliesToReviewID FROM repliesTo) AND NOT EXISTS (SELECT l.reviewID, l.email FROM likes l WHERE l.reviewID = r.reviewID AND l.email = u.email));", restaurantID)
+	if err != nil {
+		println("query")
+		panic(err)
+		return nil
+	}
+
+	var users []User
+	for rows.Next() {
+		var user User
+		rows.Scan(&user.Email, &user.Username)
+		users = append(users, user)
+	}
+	err = rows.Err()
+	if err != nil {
+		println("assignment")
+		panic(err)
+		return nil
+	}
+	return users
+}
+
 func DeleteUser(email string, c *gin.Context) (*User, error) {
 	var deleted_user User
 	row := dbpool.QueryRow(c, "DELETE FROM users WHERE email = $1 RETURNING *;", email)

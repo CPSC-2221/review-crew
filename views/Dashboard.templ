@@ -18,6 +18,10 @@ func boolToValue(value bool) string {
 	return "unchecked"
 }
 
+func usersLikedEveryReview(restaurantID int32) []db.User {
+	return db.GetUsersLikedEveryReview(restaurantID, &gin.Context{})
+}
+
 templ OwnerDashboard(account *db.User) {
 	<div class="text-6xl text-primary font-semibold font-display">OWNER DASHBOARD</div>
 	<div class="flex flex-col gap-y-6 mt-10 w-full">
@@ -45,6 +49,12 @@ templ restaurantBoard(location db.Restaurant) {
 			for _, m := range getRestaurantManagers(location.ID) {
 				@managerRow(m, location)
 			}
+			<div class="ml-4">
+				<div class="text-tertiary">Users that have liked every review:</div>
+				for _, u := range usersLikedEveryReview(location.ID) {
+					<div class="text-sm text-tertiary">{ u.Username }</div>
+				}
+			</div>
 		</div>
 	</div>
 }
