@@ -36,10 +36,7 @@ func index(ctx *gin.Context) {
 func renderIndex(ctx *gin.Context, usr *db.User) {
 	res, err := db.GetRestaurants(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
+		setup(ctx)
 	}
 
 	render.Render(ctx, http.StatusOK, views.Index(views.Home(res), usr))
