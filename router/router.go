@@ -18,7 +18,6 @@ func InitRouter() *gin.Engine {
 	r.GET("/logout", logout)
 	r.POST("/openreply", openReply)
 	r.GET("/createRestaurant", gotoCreateRestaurant)
-	r.GET("/maketables", setup)
 	r.GET("/ownerDashboard", ownerDashboard)
 
 	r.POST("/createuser", createNewUser)
