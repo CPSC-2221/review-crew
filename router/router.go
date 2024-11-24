@@ -68,5 +68,10 @@ func setup(ctx *gin.Context) {
 	db.CreateLikesTable(ctx)
 	db.CreateOwnsTable(ctx)
 
-	db.InsertDummyData(ctx)
+	err := db.InsertDummyData(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	println("Finished setting up test rows")
 }

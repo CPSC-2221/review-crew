@@ -6,6 +6,7 @@ import (
 	"server-api/render"
 	"server-api/views"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +37,17 @@ func index(ctx *gin.Context) {
 func renderIndex(ctx *gin.Context, usr *db.User) {
 	res, err := db.GetRestaurants(ctx)
 	if err != nil {
+		println("Error retrieving locations list, setting up test data")
 		setup(ctx)
+	}
+
+	time.Sleep(time.Second * time.Duration(3))
+	res, err = db.GetRestaurants(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
 	render.Render(ctx, http.StatusOK, views.Index(views.Home(res), usr))
