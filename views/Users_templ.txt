@@ -1,6 +1,0 @@
-<div class=\"text-6xl text-primary font-semibold mb-8\">USERS</div>
-<div class=\"flex flex-col gap-5\">
-</div>
-<div class=\"bg-supporting text-secondary p-2 rounded-md flex flex-row gap-1.5\"><span><b>Username:</b> 
-</span> <span><b>Email:</b> 
-</span></div>

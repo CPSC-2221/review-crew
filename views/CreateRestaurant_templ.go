@@ -29,12 +29,12 @@ func CreateRestaurant(errors ...string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"text-6xl text-primary font-semibold font-display\">CREATE LOCATION</div><form class=\"space-y-6 w-4/5 mt-10\"><div><label for=\"name\" class=\"block font-bold text-secondary text-xl\">Name</label><div class=\"mt-2 w-full\"><input name=\"name\" maxlength=\"30\" required class=\"block w-3/5 rounded-md py-1.5 text-gray-900 px-1.5\"></div><label for=\"location\" class=\"block font-bold text-secondary text-xl mt-4\">Location</label><div class=\"mt-2 w-full\"><input name=\"location\" maxlength=\"100\" required class=\"block w-full rounded-md py-1.5 text-gray-900 px-1.5\"></div><label for=\"description\" class=\"block font-bold text-secondary text-xl mt-4\">Description</label><div class=\"mt-2 w-full\"><textarea name=\"description\" maxlength=\"5000\" required class=\"resize-y w-full h-20 rounded-lg p-2\"></textarea></div></div><div><button hx-post=\"/createRestaurant\" hx-target=\"#inner-body\" class=\"flex w-full justify-center rounded-md bg-tertiary px-3 py-1.5 text-sm/6 font-bold text-secondary hover:bg-secondary hover:text-tertiary\">create restaurant</button></div></form><div id=\"error\" class=\"mt-4 text-primary font-medium\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, error := range errors {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"block\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -47,12 +47,12 @@ func CreateRestaurant(errors ...string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

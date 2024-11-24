@@ -1,7 +1,0 @@
-<div class=\"text-6xl text-primary font-semibold font-display\">LOCATIONS</div>
-<div class=\"w-full flex flex-col space-y-6 mt-10\">
-</div>
-<a hx-boost=\"true\" href=\"
-\" hx-target=\"#inner-body\" class=\"rounded-lg w-full bg-tertiary text-secondary hover:bg-secondary hover:text-tertiary active:bg-[#000000] flex flex-row font-sans cursor-pointer\"><div class=\"px-6 min-w-1/5 font-black text-xl py-10\">
-</div><div class=\"w-0 rounded-full border-2 my-5 border-primary\"></div><div class=\"px-4 w-4/5 flex-initial py-10 font-semibold\">
-</div></a>

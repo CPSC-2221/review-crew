@@ -29,12 +29,12 @@ func SignUp(errors ...string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"text-6xl text-primary font-semibold font-display\">SIGN UP</div><div class=\"mt-10 w-3/5\"><p class=\"mb-8 bg-secondary text-tertiary p-2 rounded-md font-bold\">WARNING: This site is <i>very not secure</i>, do not submit sensitive information!</p><form class=\"space-y-6\"><div><label for=\"email\" class=\"block font-bold text-secondary text-xl\">Email address</label><div class=\"mt-2 w-full\"><input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\" required class=\"block w-full rounded-md border-0 py-1.5 text-gray-900 px-1.5\"></div><label for=\"username\" class=\"block font-bold text-secondary text-xl mt-4\">Username</label><div class=\"mt-2 w-full\"><input id=\"username\" name=\"username\" type=\"text\" autocomplete=\"username\" required class=\"block w-full rounded-md border-0 py-1.5 text-gray-900 px-1.5\"></div></div><div><button hx-post=\"/createuser\" hx-target=\"#inner-body\" class=\"flex w-full justify-center rounded-md bg-tertiary px-3 py-1.5 text-sm/6 font-bold text-secondary hover:bg-secondary hover:text-tertiary\">create account</button></div></form><div id=\"error\" class=\"mt-4 text-primary font-medium\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, error := range errors {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"block\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -47,12 +47,12 @@ func SignUp(errors ...string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

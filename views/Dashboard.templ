@@ -51,8 +51,10 @@ templ restaurantBoard(location db.Restaurant) {
 			}
 			<div class="ml-4">
 				<div class="text-tertiary">Users that have liked every review:</div>
-				for _, u := range usersLikedEveryReview(location.ID) {
-					<div class="text-sm text-tertiary">{ u.Username }</div>
+				if (db.CountReviewsOnRestaurant(&gin.Context{}, location.ID) > 0) {
+					for _, u := range usersLikedEveryReview(location.ID) {
+						<div class="text-sm text-tertiary">{ u.Username }</div>
+					}
 				}
 			</div>
 		</div>
