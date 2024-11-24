@@ -33,13 +33,3 @@ func CountRepliesToReview(c *gin.Context, reviewID int32) int {
 	}
 	return count
 }
-
-func DeleteRepliesTo(c *gin.Context, replyToReviewID int32, isRepliedToReviewID int32) (*RepliesTo, error) {
-	var deleted_repliesTo RepliesTo
-	row := dbpool.QueryRow(c, "DELETE FROM repliesTo WHERE repliesToReviewID = $1 AND isRepliedToReviewID = $2 RETURNING *;", replyToReviewID, isRepliedToReviewID)
-	err := row.Scan(&deleted_repliesTo.RepliesToReviewID, &deleted_repliesTo.IsRepliedToReviewID)
-	if err != nil {
-		return nil, err
-	}
-	return &deleted_repliesTo, nil
-}

@@ -69,26 +69,6 @@ func GetUserOwnedRestaurants(email string, c *gin.Context) []Restaurant {
 	return restaurants
 }
 
-func DeleteRestaurant(id int32, c *gin.Context) (*Restaurant, error) {
-	var deleted_restaurant Restaurant
-	row := dbpool.QueryRow(c, "DELETE FROM restaurants WHERE restaurantID = $1 RETURNING *;", id)
-	err := row.Scan(&deleted_restaurant.ID, &deleted_restaurant.Name, &deleted_restaurant.Location, &deleted_restaurant.Description)
-	if err != nil {
-		return nil, err
-	}
-	return &deleted_restaurant, nil
-}
-
-func UpdateRestaurant(replaceWith *Restaurant, id int32, c *gin.Context) (*Restaurant, error) {
-	var new_restaurant Restaurant
-	row := dbpool.QueryRow(c, "UPDATE restaurants SET name=$2, location=$3, description=$4, isPremium=$5 where restaurantID=$1 RETURNING *;", id, replaceWith.Name, replaceWith.Location, replaceWith.Description)
-	err := row.Scan(&new_restaurant.ID, &new_restaurant.Name, &new_restaurant.Location, &new_restaurant.Description)
-	if err != nil {
-		return nil, err
-	}
-	return &new_restaurant, nil
-}
-
 func UpdateDescription(replaceWith string, id int32, c *gin.Context) {
 	dbpool.QueryRow(c, "UPDATE restaurants SET description=$1 where restaurantID=$2;", replaceWith, id)
 }

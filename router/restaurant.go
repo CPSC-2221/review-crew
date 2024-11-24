@@ -8,30 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func postRestaurant(ctx *gin.Context) {
-	var restaurant db.Restaurant
-
-	err := ctx.Bind(&restaurant)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	res, err := db.CreateRestaurant(&restaurant, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"restaurant": res,
-	})
-}
-
 func createRestaurant(ctx *gin.Context) {
 	var restaurant db.Restaurant
 	restaurant.Name = ctx.PostForm("name")
@@ -75,63 +51,6 @@ func createRestaurant(ctx *gin.Context) {
 	println(resown.RestaurantID)
 
 	ctx.Header("HX-Redirect", "/location/"+strconv.Itoa(int(res.ID)))
-}
-
-func deleteRestaurant(ctx *gin.Context) {
-	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	id := int32(id_32)
-
-	res, err := db.DeleteRestaurant(id, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_restaurant": res,
-	})
-}
-
-func putRestaurant(ctx *gin.Context) {
-	var updated_restaurant db.Restaurant
-
-	err := ctx.Bind(&updated_restaurant)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	id_32, err := strconv.ParseInt(ctx.Param("id"), 10, 32)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	id := int32(id_32)
-
-	updated_restaurant.ID = id
-
-	res, err := db.UpdateRestaurant(&updated_restaurant, id, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_restaurant": res,
-	})
 }
 
 func putDescription(ctx *gin.Context) {

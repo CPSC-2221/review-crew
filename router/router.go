@@ -34,34 +34,27 @@ func InitRouter() *gin.Engine {
 	r.POST("/createreply", createReply)
 	r.POST("/deletereview", removeReview)
 
-	r.POST("/has-pizza-image", postHasPizzaImage)
-	r.GET("/has-pizza-image/:name", getHasPizzaImage)
-	r.PUT("/has-pizza-image/:name", putHasPizzaImage)
-	r.DELETE("/has-pizza-image/:name", deleteHasPizzaImage)
-	r.POST("/create-has-pizza-image-table", db.CreateHasPizzaImageTable)
+	// r.POST("/has-pizza-image", postHasPizzaImage)
+	// r.GET("/has-pizza-image/:name", getHasPizzaImage)
+	// r.PUT("/has-pizza-image/:name", putHasPizzaImage)
+	// r.DELETE("/has-pizza-image/:name", deleteHasPizzaImage)
+	// r.POST("/create-has-pizza-image-table", db.CreateHasPizzaImageTable)
 
 	r.POST("/createlike", createLike)
 	r.POST("/deletelike", removeLike)
 
-	r.POST("/has-burger-emoji", postHasBurgerEmoji)
-	r.GET("/has-burger-emoji/:username", getHasBurgerEmoji)
-	r.PUT("/has-burger-emoji/:username", putHasBurgerEmoji)
-	r.DELETE("/has-burger-emoji:username", deleteHasBurgerEmoji)
-	r.POST("/create-has-burger-emoji-table", db.CreateHasBurgerEmojiTable)
+	// r.POST("/has-burger-emoji", postHasBurgerEmoji)
+	// r.GET("/has-burger-emoji/:username", getHasBurgerEmoji)
+	// r.PUT("/has-burger-emoji/:username", putHasBurgerEmoji)
+	// r.DELETE("/has-burger-emoji:username", deleteHasBurgerEmoji)
+	// r.POST("/create-has-burger-emoji-table", db.CreateHasBurgerEmojiTable)
 
 	return r
-}
-
-func logout(ctx *gin.Context) {
-	ctx.SetCookie("auth", "", 0, "", "", false, true)
-	ctx.Header("HX-Refresh", "true")
 }
 
 func setup(ctx *gin.Context) {
 	db.CreateUsersTable(ctx)
 	db.CreateRestaurantTable(ctx)
-	db.CreateHasPizzaImageTable(ctx)
-	db.CreateHasBurgerEmojiTable(ctx)
 	db.CreateReviewTable(ctx)
 	db.CreateRepliesToTable(ctx)
 	db.CreateManagesTable(ctx)

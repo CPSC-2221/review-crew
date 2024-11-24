@@ -1,7 +1,6 @@
 package router
 
 import (
-	"net/http"
 	"server-api/db"
 
 	"github.com/gin-gonic/gin"
@@ -55,80 +54,7 @@ func loginUser(ctx *gin.Context) {
 	ctx.Header("HX-Redirect", "/")
 }
 
-func postUser(ctx *gin.Context) {
-	var user db.User
-
-	err := ctx.Bind(&user)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	res, err := db.CreateUser(user, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"user": res,
-	})
-}
-
-func getUser(ctx *gin.Context) {
-	email := ctx.Param("email")
-	res, err := db.GetUser(email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"user": res,
-	})
-}
-
-func deleteUser(ctx *gin.Context) {
-	email := ctx.Param("email")
-	res, err := db.DeleteUser(email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"deleted_user": res,
-	})
-}
-
-func putUser(ctx *gin.Context) {
-	var updatedUser db.User
-
-	err := ctx.Bind(&updatedUser)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	email := ctx.Param("email")
-
-	res, err := db.UpdateUser(updatedUser, email, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"updated_user": res,
-	})
+func logout(ctx *gin.Context) {
+	ctx.SetCookie("auth", "", 0, "", "", false, true)
+	ctx.Header("HX-Refresh", "true")
 }

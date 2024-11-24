@@ -1,7 +1,6 @@
 package router
 
 import (
-	"net/http"
 	"server-api/db"
 	"strconv"
 
@@ -50,26 +49,4 @@ func updateManager(ctx *gin.Context) {
 
 	db.UpdateManages(manages, ctx)
 	ctx.Header("HX-Refresh", "true")
-}
-
-func getManages(ctx *gin.Context) {
-	email := ctx.Param("email")
-	id_32, err := strconv.ParseInt(ctx.Param("restaurantID"), 10, 32)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	restaurantID := int32(id_32)
-	res, err := db.GetManages(email, restaurantID, ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"manages": res,
-	})
 }

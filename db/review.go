@@ -37,37 +37,6 @@ func CreateReview(review Review, c *gin.Context) (*Review, error) {
 	return &new_review, nil
 }
 
-func GetReview(id int32, c *gin.Context) (*Review, error) {
-	var review Review
-	row := dbpool.QueryRow(c, "SELECT * FROM review WHERE reviewID = $1;", id)
-	err := row.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime)
-	if err != nil {
-		return nil, err
-	}
-	return &review, nil
-}
-
-func GetReviews(c *gin.Context) ([]Review, error) {
-	rows, err := dbpool.Query(c, "SELECT * FROM review;")
-	if err != nil {
-		return nil, err
-	}
-	var reviews []Review
-	for rows.Next() {
-		var review Review
-		err := rows.Scan(&review.ID, &review.Email, &review.RestaurantID, &review.Comment, &review.Datetime)
-		if err != nil {
-			return nil, err
-		}
-		reviews = append(reviews, review)
-	}
-	err = rows.Err()
-	if err != nil {
-		return nil, err
-	}
-	return reviews, nil
-}
-
 type NamedReview struct {
 	Review
 	Username string
@@ -134,14 +103,4 @@ func DeleteReview(id int32, c *gin.Context) (*Review, error) {
 		return nil, err
 	}
 	return &deleted_review, nil
-}
-
-func UpdateReview(review Review, id int32, c *gin.Context) (*Review, error) {
-	var updated_review Review
-	row := dbpool.QueryRow(c, "UPDATE review SET comment=$2 WHERE id=$1 RETURNING *;", id, review.Comment)
-	err := row.Scan(&updated_review.ID, &updated_review.Email, &updated_review.RestaurantID, &updated_review.Comment, &updated_review.Datetime)
-	if err != nil {
-		return nil, err
-	}
-	return &updated_review, nil
 }

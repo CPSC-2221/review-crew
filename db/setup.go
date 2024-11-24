@@ -36,33 +36,33 @@ func CreateRestaurantTable(c *gin.Context) {
 	}
 }
 
-func CreateHasPizzaImageTable(c *gin.Context) {
-	_, err := dbpool.Exec(c,
-		"CREATE TABLE IF NOT EXISTS hasPizzaImage ("+
-			"name TEXT PRIMARY KEY,"+
-			"hasPizzaImage BOOLEAN NOT NULL,"+
-			"FOREIGN KEY(name) REFERENCES restaurants(name)"+
-			");")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
-}
-
-func CreateHasBurgerEmojiTable(c *gin.Context) {
-	_, err := dbpool.Exec(c,
-		"CREATE TABLE IF NOT EXISTS hasBurgerEmoji ("+
-			"username TEXT PRIMARY KEY,"+
-			"hasBurgerEmoji BOOLEAN NOT NULL,"+
-			"FOREIGN KEY(username) REFERENCES users(username)"+
-			");")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
-}
+//	func CreateHasPizzaImageTable(c *gin.Context) {
+//		_, err := dbpool.Exec(c,
+//			"CREATE TABLE IF NOT EXISTS hasPizzaImage ("+
+//				"name TEXT PRIMARY KEY,"+
+//				"hasPizzaImage BOOLEAN NOT NULL,"+
+//				"FOREIGN KEY(name) REFERENCES restaurants(name)"+
+//				");")
+//		if err != nil {
+//			c.JSON(http.StatusBadRequest, gin.H{
+//				"error": err.Error(),
+//			})
+//		}
+//	}
+//
+//	func CreateHasBurgerEmojiTable(c *gin.Context) {
+//		_, err := dbpool.Exec(c,
+//			"CREATE TABLE IF NOT EXISTS hasBurgerEmoji ("+
+//				"username TEXT PRIMARY KEY,"+
+//				"hasBurgerEmoji BOOLEAN NOT NULL,"+
+//				"FOREIGN KEY(username) REFERENCES users(username)"+
+//				");")
+//		if err != nil {
+//			c.JSON(http.StatusBadRequest, gin.H{
+//				"error": err.Error(),
+//			})
+//		}
+//	}
 
 func CreateReviewTable(c *gin.Context) {
 	_, err := dbpool.Exec(c,
