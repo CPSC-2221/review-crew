@@ -68,5 +68,5 @@ func setup(ctx *gin.Context) {
 	db.CreateLikesTable(ctx)
 	db.CreateOwnsTable(ctx)
 
-	//db.CreateAndInsertDummyData(ctx)
+	db.InsertDummyData(ctx)
 }
